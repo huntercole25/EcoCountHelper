@@ -36,6 +36,8 @@ EffectsPlotter(EpfuNb2, c(":)", "!", "argument", "FirstColWidth",
                            
 ExPlot <- EpfuNb2EffectsPlot
 
+#First grid attempt
+
 TestGrid <- DumbGrid(ExPlot, ExPlot, ExPlot, ExPlot,
                       Ncols = 2)
 TestGrid #View the plot in a separate window
