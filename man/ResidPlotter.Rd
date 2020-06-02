@@ -41,7 +41,7 @@ if a user-written function is used to scale by two standard deciations instead o
 }
 
 \examples{
-data("BatData", "EpfuNb2", "MyevNb2", package = "ModelHelper")
+data("BatData", "EpfuNb2", "MyevNb2", package = "EcoCountHelper")
 scale2 <- function(x){(x - mean(x))/(2*sd(x))}
 ResidPlotter(BatData, "^[[:alpha:]]{4}", c("EpfuNb2", "MyevNb2"))
 

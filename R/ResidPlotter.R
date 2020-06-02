@@ -30,7 +30,7 @@
 #' \code{\link[base]{scale}} does), that function must be defined in your global environment.
 #'
 #' @examples
-#' data("BatData", "EpfuNb2", "MyevNb2", package = "ModelHelper")
+#' data("BatData", "EpfuNb2", "MyevNb2", package = "EcoCountHelper")
 #' scale2 <- function(x){(x - mean(x))/(2*sd(x))}
 #' ResidPlotter(BatData, "^[[:alpha:]]{4}", c("EpfuNb2", "MyevNb2"))
 #'

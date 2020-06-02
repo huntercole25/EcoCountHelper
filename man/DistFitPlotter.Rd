@@ -30,7 +30,7 @@ Departments of Mathematics & Statistics and Biology,
 McMaster University, Hamilton (2012)}.
 }
 \examples{
-data("BatData", package = "ModelHelper")
+data("BatData", package = "EcoCountHelper")
 DistFitPlotter(c("Site", "Year"),
                 BatData, c("Myev", "Epfu"))
 

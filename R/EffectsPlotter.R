@@ -40,7 +40,7 @@
 #' to this function must have the same model formula.
 #'
 #' @examples
-#' data("EpfuNb2", "MyevNb2", package = "ModelHelper")
+#' data("EpfuNb2", "MyevNb2", package = "EcoCountHelper")
 #'
 #' #Effects plot for a single model
 #'

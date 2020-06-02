@@ -20,7 +20,7 @@
 #' argument. Plots that are not in the left-most columns will not have y-axis labels.
 #'
 #' @examples
-#' data("ExPlot", package = "ModelHelper")
+#' data("ExPlot", package = "EcoCountHelper")
 #' TestGrid <- DumbGrid(ExPlot, ExPlot, ExPlot, ExPlot,
 #'                       Ncols = 2)
 #' TestGrid #View the plot in a separate window

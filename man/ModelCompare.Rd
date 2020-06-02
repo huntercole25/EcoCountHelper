@@ -32,7 +32,7 @@ compared via \code{\link[stats]{AIC}}.
 }
 \examples{
 data("EpfuNb1", "EpfuNb2", "MyevNb1",
-      "MyevNb2", package = "ModelHelper")
+      "MyevNb2", package = "EcoCountHelper")
 Species <- c("Epfu", "Myev")
 ModelCompare(Species, TestCompare)
 
