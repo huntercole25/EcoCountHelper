@@ -29,7 +29,13 @@ areas with y-axis labels, this function requires manual resizing of the furthest
 make them the same size as the others, hence the name DumbGrid rather than SmartGrid.
 }
 \examples{
-data("ExPlot", package = "EcoCountHelper")
+data("EpfuNb2", package = "EcoCountHelper")
+EffectsPlotter(EpfuNb2, c(":)", "!", "argument", "FirstColWidth",
+                           "the", "with", "adjusted", "be", "to",
+                           "need", "plots", "These"))
+                           
+ExPlot <- EpfuNb2EffectsPlot
+
 TestGrid <- DumbGrid(ExPlot, ExPlot, ExPlot, ExPlot,
                       Ncols = 2)
 TestGrid #View the plot in a separate window
