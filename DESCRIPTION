@@ -1,4 +1,4 @@
-Package: ModelHelper
+Package: EcoCountHelper
 Title: An assistant for comparing and interpretting models with count data
 Version: 0.0.0.01
 Depends:
