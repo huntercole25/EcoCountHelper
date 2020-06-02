@@ -5,7 +5,7 @@
 #'
 #'@section Details:
 #'To make adjustments to your plot's theme while using this function, using ggplot2's
-#' \code{\link[ggplot2]{theme()}} in a line proceeding \code{theme_nocturnal()}.
+#' \code{\link[ggplot2]{theme}} in a line proceeding \code{theme_nocturnal()}.
 #'
 #' @examples
 #' #Creating a plot with theme_nocturnal

@@ -26,7 +26,7 @@
 #' to smallest (e.g., for 80\%, 90\%, and 95\% confidence intervals, supply \code{ConfInts = c(95, 90, 80)}).
 #'
 #' @param Scaled A Boolean value indicating whether model estimates are scaled (T) or not (F). When \code{Scaled = T},
-#' there will be a dotted \code{\link[ggplot2]{geom_vline}} where estimates = 0.
+#' there will be a dotted \code{\link[ggplot2]{geom_abline}} where estimates = 0.
 #'
 #' @param ThemeBlack A Boolean value indicating whether \code{\link{theme_nocturnal}} should be applied to plots
 #' (T) or not (F).
