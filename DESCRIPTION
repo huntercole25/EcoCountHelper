@@ -1,0 +1,20 @@
+Package: ModelHelper
+Title: An assistant for comparing and interpretting models with count data
+Version: 0.0.0.01
+Depends:
+	data.table,
+	cowplot,
+	ggplot2,
+	glmmTMB,
+	DHARMa,
+	dplyr
+Authors@R: 
+    person(given = "Hunter",
+           family = "Cole",
+           role = c("aut", "cre"),
+           email = "huntercole@u.boisestate.edu")
+Description: This package is tailored to comparing and interpretting models generated using glmmTMB that describe trends in count data. The functions available in the package work best with data that is long-form in terms of experimental units, and wide form in terms of response variables (e.g., site-nights as rows, and species counts as columns). From comparing candidate models for multiple response variables at a time to visualizing modelled effects, this package will facilitate the processes necessary to understand what your models are telling you about the data.
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.1.0
