@@ -46,12 +46,15 @@
 #'
 #' Labels <- letters[1:12]
 #' EffectsPlotter(EpfuNb2, Labels)
+#' EpfuNb2EffectsPlot
 #'
 #' #Effects plot for multiple models specified
 #' #in a character vector.
 #'
 #' Mods <- c("EpfuNb2", "MyevNb2")
 #' EffectsPlotter(Mods, Labels)
+#' EpfuNb2EffectsPlot
+#' MyevNb2EffectsPlot
 #'
 #' #Effects plot for multiple models specified
 #' #in a data frame
@@ -59,6 +62,8 @@
 #' ModTable <- data.frame(Species = c("Epfu", "Myev"),
 #'                         Mods = c("EpfuNb2", "MyevNb2"))
 #' EffectsPlotter(ModTable, Labels, "Mods")
+#' EpfuNb2EffectsPlot
+#' MyevNb2EffectsPlot
 #'
 #' @export
 

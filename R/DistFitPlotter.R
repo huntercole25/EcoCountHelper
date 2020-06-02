@@ -24,6 +24,8 @@
 #' data("BatData", package = "EcoCountHelper")
 #' DistFitPlotter(c("Site", "Year"),
 #'                 BatData, c("Myev", "Epfu"))
+#' EpfuDistPlot
+#' MyevDistPlot
 #'
 #' @export
 

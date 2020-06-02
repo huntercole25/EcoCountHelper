@@ -26,6 +26,10 @@
 #'       "MyevNb2", package = "EcoCountHelper")
 #' Species <- c("Epfu", "Myev")
 #' ModelCompare(Species, TestCompare)
+#' 
+#' EpfuAIC
+#' MyevAIC
+#' TestCompare
 #'
 #' @export
 
