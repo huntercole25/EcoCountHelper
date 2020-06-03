@@ -36,4 +36,8 @@ data("EpfuNb1", "EpfuNb2", "MyevNb1",
 Species <- c("Epfu", "Myev")
 ModelCompare(Species, TestCompare)
 
+EpfuAIC
+MyevAIC
+TestCompare
+
 }

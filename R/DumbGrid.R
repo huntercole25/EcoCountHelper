@@ -6,7 +6,7 @@
 #' areas with y-axis labels, this function requires manual resizing of the furthest-left column of plots to
 #' make them the same size as the others, hence the name DumbGrid rather than SmartGrid.
 #'
-#' @param ... Unquoted object names of plots to be included in the resultant grid of plots.
+#' @param ... Unquoted object names of ggplot objects to be included in the resultant grid of plots.
 #'
 #' @param Ncols A number indicating the number of columns that should be used in the plot grid.
 #'
@@ -45,14 +45,11 @@ DumbGrid <- function(..., Ncols, FirstColWidth = 1, SharedLegend = F){
 
   plots <- list(...)
 
-  if("ggplot" %in% class(list(...)[[1]])){
-
   nplot <- length(plots)
 
   for(i in setdiff(seq(1, nplot, 1), seq(1, nplot, Ncols))){
     plots[[i]] <- plots[[i]] + theme(axis.title.y = element_blank(), axis.text.y = element_blank())
-  }
-
+}
   plnums <- seq(1, nplot, 1)
   nox <- plnums[plnums < max(seq(1, nplot, Ncols))]
 
@@ -71,7 +68,6 @@ DumbGrid <- function(..., Ncols, FirstColWidth = 1, SharedLegend = F){
 
   if(SharedLegend == T){
     Tplot <- plot_grid(Tplot, shleg, ncol = 2, rel_widths = c(9,1))
-    }
   }else{
     Tplot <- plot_grid(plotlist = plots, ncol = Ncols, align = "hv", axis = "tblr")
   }

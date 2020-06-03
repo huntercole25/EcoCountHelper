@@ -33,5 +33,7 @@ McMaster University, Hamilton (2012)}.
 data("BatData", package = "EcoCountHelper")
 DistFitPlotter(c("Site", "Year"),
                 BatData, c("Myev", "Epfu"))
+EpfuDistPlot
+MyevDistPlot
 
 }

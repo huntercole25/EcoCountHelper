@@ -7,7 +7,7 @@
 DumbGrid(..., Ncols, FirstColWidth = 1, SharedLegend = F)
 }
 \arguments{
-\item{...}{Unquoted object names of plots to be included in the resultant grid of plots.}
+\item{...}{Unquoted object names of ggplot objects to be included in the resultant grid of plots.}
 
 \item{Ncols}{A number indicating the number of columns that should be used in the plot grid.}
 
