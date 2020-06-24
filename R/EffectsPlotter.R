@@ -67,10 +67,9 @@
 #'
 #' @export
 
-EffectsPlotter <- function(TopMods, ParamLabs, TopModCol = NULL, ConfInts = c(90, 80), Scaled = T,
+EffectsPlotter <- function(TopMods, ParamLabs = NULL, TopModCol = NULL, ConfInts = c(90, 80), Scaled = T,
                                ThemeBlack = T){
-
-  if(class(TopMods) == "glmmTMB"){
+  if("glmmTMB" %in% class(TopMods)){
     TmpMod <- deparse(substitute(TopMods))
   }else{
     TmpMod <- get(deparse(substitute(TopMods)))
@@ -80,6 +79,9 @@ EffectsPlotter <- function(TopMods, ParamLabs, TopModCol = NULL, ConfInts = c(90
   }
   EffectsPlotterSub <- function(TopMod){
     SpMod <- get(TopMod, envir = .GlobalEnv)
+    if(is.null(ParamLabs) == T){
+      ParamLabs = rownames(summary(SpMod)$coeff$cond)
+    }
     PlotData <- data.table::as.data.table(summary(SpMod)$coeff$cond)
     PlotData[,Param := rownames(summary(SpMod)$coeff$cond)]
     PlotData[,Order := as.factor(c(1:nrow(PlotData)))]

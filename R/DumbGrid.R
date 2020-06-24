@@ -64,12 +64,11 @@ DumbGrid <- function(..., Ncols, FirstColWidth = 1, SharedLegend = F){
     }
   }
 
-  Tplot <- plot_grid(plotlist = plots, ncol = Ncols, rel_widths = c(FirstColWidth,rep(1, Ncols - 1)))
+  Tplot <- plot_grid(plotlist = plots, ncol = Ncols, rel_widths = c(FirstColWidth,rep(1, Ncols - 1)),
+                     align = "v", axis = "tbr")
 
   if(SharedLegend == T){
     Tplot <- plot_grid(Tplot, shleg, ncol = 2, rel_widths = c(9,1))
-  }else{
-    Tplot <- plot_grid(plotlist = plots, ncol = Ncols, align = "hv", axis = "tblr")
   }
 
   Tplot
