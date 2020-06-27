@@ -2,15 +2,15 @@ Package: EcoCountHelper
 Title: An assistant for comparing and interpretting models with count data
 Version: 0.0.0.01
 Depends:
-  data.table,
-	glmmTMB
+  data.table (>= 1.12.8),
+	glmmTMB (>= 1.0.1),
+	R (>= 3.6.3)
 Imports:
-  cowplot,
-  DHARMa,
-  dplyr,
-  ggplot2,
-  grDevices,
-  performance
+  cowplot (>= 1.0.0),
+  DHARMa (>= 0.3.1),
+  dplyr (>= 1.0.0),
+  ggplot2 (>= 3.3.1),
+  performance (>= 0.4.5)
 Authors@R: 
     c(person(given = "Hunter",
            family = "Cole",
