@@ -54,11 +54,11 @@ DistFitLong <- function(Splitters, Data, CountCol, GroupCol,
     
     if(ThemeBlack == T){pocol = "grey80"}else{pocol = "black"}
     
-    TmpPlot <- ggplot2::ggplot(data = MeanVarData, aes(x = .data[["MeanData"]], y = .data[["VarData"]])) +
+    TmpPlot <- ggplot2::ggplot(data = MeanVarData, ggplot2::aes(x = .data[["MeanData"]], y = .data[["VarData"]])) +
       ggplot2::geom_point(color = pocol) +
-      ggplot2::geom_smooth(method = "lm", formula = y~x-1, aes(color = "NB1"), lty = 1) + #NB1
-      ggplot2::geom_smooth(method = "lm", formula = y ~ I(x^2) + offset(x) - 1, aes(color = "NB2"), lty = 1) + #NB2
-      ggplot2::geom_abline(aes(intercept = 0, slope = 1, color = "Poisson"), lty = 2) + #Poisson
+      ggplot2::geom_smooth(method = "lm", formula = y~x-1, ggplot2::aes(color = "NB1"), lty = 1) + #NB1
+      ggplot2::geom_smooth(method = "lm", formula = y ~ I(x^2) + offset(x) - 1, ggplot2::aes(color = "NB2"), lty = 1) + #NB2
+      ggplot2::geom_abline(ggplot2::aes(intercept = 0, slope = 1, color = "Poisson"), lty = 2) + #Poisson
       ggplot2::scale_color_manual(name = "Families", values = c("green", "purple", "red")) +
       ggplot2::labs(title = GroupName, x = "Mean", y = "Variance") +
       ggplot2::theme_light() +

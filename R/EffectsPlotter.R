@@ -103,25 +103,25 @@ EffectsPlotter <- function(TopMods, ParamLabs = NULL, TopModCol = NULL,
 
     if(length(ConfInts) >= 1){
       EffectsPlot <- EffectsPlot +
-        ggplot2::geom_errorbar(aes(xmin = Estimate - (`Std. Error`*stats::qnorm(1-((100-ConfInts[1])/2/100))),
+        ggplot2::geom_errorbar(ggplot2::aes(xmin = Estimate - (`Std. Error`*stats::qnorm(1-((100-ConfInts[1])/2/100))),
                           xmax = Estimate + (`Std. Error`*stats::qnorm(1-((100-ConfInts[1])/2/100))),
                           x = Estimate, y = Order), color = barcol, size = 1, width = 0.7)
     }
     if(length(ConfInts) >= 2){
       EffectsPlot <- EffectsPlot +
-        ggplot2::geom_errorbar(aes(xmin = Estimate - (`Std. Error`*stats::qnorm(1-((100-ConfInts[2])/2/100))),
+        ggplot2::geom_errorbar(ggplot2::aes(xmin = Estimate - (`Std. Error`*stats::qnorm(1-((100-ConfInts[2])/2/100))),
                           xmax = Estimate + (`Std. Error`*stats::qnorm(1-((100-ConfInts[2])/2/100))),
                           x = Estimate, y = Order), color = barcol, size = 1, width = 0.5)
     }
     if(length(ConfInts) == 3){
       EffectsPlot <- EffectsPlot +
-        ggplot2::geom_errorbar(aes(xmin = Estimate - (`Std. Error`*stats::qnorm(1-((100-ConfInts[3])/2/100))),
+        ggplot2::geom_errorbar(ggplot2::aes(xmin = Estimate - (`Std. Error`*stats::qnorm(1-((100-ConfInts[3])/2/100))),
                           xmax = Estimate + (`Std. Error`*stats::qnorm(1-((100-ConfInts[3])/2/100))),
                           x = Estimate, y = Order), color = barcol, size = 1, width = 0.3)
     }
 
     EffectsPlot <- EffectsPlot +
-      ggplot2::geom_point(aes(x = Estimate, y = Order), color = pocol, size = 3) +
+      ggplot2::geom_point(ggplot2::aes(x = Estimate, y = Order), color = pocol, size = 3) +
       ggplot2::scale_y_discrete(labels = ParamLabs, drop = T) +
       ggplot2::labs(x = "Estimate", y = "Term", title = TopMod) +
       ggplot2::theme_light() +
