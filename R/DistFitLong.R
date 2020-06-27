@@ -62,7 +62,7 @@ DistFitLong <- function(Splitters, Data, CountCol, GroupCol,
       ggplot2::scale_color_manual(name = "Families", values = c("green", "purple", "red")) +
       ggplot2::labs(title = GroupName, x = "Mean", y = "Variance") +
       ggplot2::theme_light() +
-      ggplot2::theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+      ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5, face = "bold"))
     
     if(ThemeBlack == T){
       TmpPlot <- TmpPlot + theme_nocturnal()

@@ -22,20 +22,20 @@
 #' @export
 
 theme_nocturnal <- function(){
-  ggplot2::theme(plot.background = element_rect(fill = "black"),
-      panel.background = element_rect(fill = "black"),
-      panel.grid.major = element_line(color = "grey20"),
-      panel.grid.minor = element_line(color = "grey20"),
-      axis.text = element_text(color = "grey70", size = 14),
-      axis.ticks = element_line(color = "grey50"),
-      legend.background = element_rect(fill = "black"),
-      legend.text = element_text(color = "grey70", size = 11),
-      legend.title = element_text(color = "grey70", size = 11, face = "bold"),
-      legend.key = element_rect(fill = "black", color = "black"),
-      plot.title = element_text(color = "grey70", hjust = 0.5, margin = margin(0, 0, 10, 0), size = 18,
+  ggplot2::theme(plot.background = ggplot2::element_rect(fill = "black"),
+      panel.background = ggplot2::element_rect(fill = "black"),
+      panel.grid.major = ggplot2::element_line(color = "grey20"),
+      panel.grid.minor = ggplot2::element_line(color = "grey20"),
+      axis.text = ggplot2::element_text(color = "grey70", size = 14),
+      axis.ticks = ggplot2::element_line(color = "grey50"),
+      legend.background = ggplot2::element_rect(fill = "black"),
+      legend.text = ggplot2::element_text(color = "grey70", size = 11),
+      legend.title = ggplot2::element_text(color = "grey70", size = 11, face = "bold"),
+      legend.key = ggplot2::element_rect(fill = "black", color = "black"),
+      plot.title = ggplot2::element_text(color = "grey70", hjust = 0.5, margin = margin(0, 0, 10, 0), size = 18,
                                 face = "bold"),
-      axis.title = element_text(color = "grey70", size = 16, face = "bold"),
-      axis.line.y = element_line(color = "grey50"),
-      axis.title.x = element_text(margin = margin(10, 0, 0, 0)),
-      axis.title.y = element_text(margin = margin(0, 10, 0, 0)))
+      axis.title = ggplot2::element_text(color = "grey70", size = 16, face = "bold"),
+      axis.line.y = ggplot2::element_line(color = "grey50"),
+      axis.title.x = ggplot2::element_text(margin = margin(10, 0, 0, 0)),
+      axis.title.y = ggplot2::element_text(margin = margin(0, 10, 0, 0)))
 }

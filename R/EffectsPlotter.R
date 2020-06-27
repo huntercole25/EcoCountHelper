@@ -125,7 +125,7 @@ EffectsPlotter <- function(TopMods, ParamLabs = NULL, TopModCol = NULL,
       ggplot2::scale_y_discrete(labels = ParamLabs, drop = T) +
       ggplot2::labs(x = "Estimate", y = "Term", title = TopMod) +
       ggplot2::theme_light() +
-      ggplot2::theme(plot.title = element_text(hjust = 0.5))
+      ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
 
     if(ThemeBlack == T){EffectsPlot <- EffectsPlot + theme_nocturnal()}
 
