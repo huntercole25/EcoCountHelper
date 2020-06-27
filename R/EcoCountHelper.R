@@ -114,6 +114,13 @@
 #' \item\code{\link{theme_nocturnal}}
 #' }
 #' 
+#' @section Suggested Reading:
+#' Harrison, X. A., Donaldson, L., Correa-Cano, M. E., Evans, J., Fisher, D. N., 
+#' Goodwin, C. E. D., Robinson, B. S., Hodgson, D. J., & Inger, R. (2018). A brief 
+#' introduction to mixed effects modelling and multi-model inference in ecology. PeerJ, 
+#' 6. \url{https://doi.org/10.7717/peerj.4794}
+
+#' 
 #' @docType package
 #' @name EcoCountHelper
 NULL
