@@ -32,10 +32,10 @@ theme_nocturnal <- function(){
       legend.text = ggplot2::element_text(color = "grey70", size = 11),
       legend.title = ggplot2::element_text(color = "grey70", size = 11, face = "bold"),
       legend.key = ggplot2::element_rect(fill = "black", color = "black"),
-      plot.title = ggplot2::element_text(color = "grey70", hjust = 0.5, margin = margin(0, 0, 10, 0), size = 18,
+      plot.title = ggplot2::element_text(color = "grey70", hjust = 0.5, margin = ggplot2::margin(0, 0, 10, 0), size = 18,
                                 face = "bold"),
       axis.title = ggplot2::element_text(color = "grey70", size = 16, face = "bold"),
       axis.line.y = ggplot2::element_line(color = "grey50"),
-      axis.title.x = ggplot2::element_text(margin = margin(10, 0, 0, 0)),
-      axis.title.y = ggplot2::element_text(margin = margin(0, 10, 0, 0)))
+      axis.title.x = ggplot2::element_text(margin = ggplot2::margin(10, 0, 0, 0)),
+      axis.title.y = ggplot2::element_text(margin = ggplot2::margin(0, 10, 0, 0)))
 }
