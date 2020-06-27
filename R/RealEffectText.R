@@ -26,12 +26,11 @@
 #' #The effect of a 10% change increase in
 #' #moon face illumination on Epfu activity
 #'
-#' data("EpfuNb2Long", "BatData", package = "EcoCountHelper")
+#' data("EpfuNb2Long", "BatDataLong", package = "EcoCountHelper")
 #'
 #' RealEffectText(EpfuNb2Long, "scale2(MoonPct)",
 #'                 0.1, ScaleSds = 2,
-#'                 PredVect = BatData$MoonPct,
-#'                 UnitSymb = "percent")
+#'                 PredVect = BatDataLong$MoonPct)
 #'
 #' @export
 
