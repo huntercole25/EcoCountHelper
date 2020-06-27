@@ -43,10 +43,10 @@ on the response variable.
 #The effect of a 10\% change increase in
 #moon face illumination on Epfu activity
 
-data("EpfuNb2", "BatData", package = "EcoCountHelper")
+data("EpfuNb2Long", "BatData", package = "EcoCountHelper")
 
-RealEffectText(EpfuNb2, "scale2(MoonPct)",
-                10, ScaleSds = 2,
+RealEffectText(EpfuNb2Long, "scale2(MoonPct)",
+                0.1, ScaleSds = 2,
                 PredVect = BatData$MoonPct,
                 UnitSymb = "percent")
 

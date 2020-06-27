@@ -23,38 +23,36 @@
 #' are named with the model name follow by "ResidTests" (e.g., the test values associated with a model named
 #' "EpfuNb2" would be named "EpfuNb2SimResidPlot").
 #'
-#' @section Details:
-#' It is important to note that if a custom-written function is used to manipulate data in any models (e.g.,
-#' if a user-written function is used to scale by two standard deciations instead of one as
-#' \code{\link[base]{scale}} does), that function must be defined in your global environment.
+#' @seealso \code{\link{ResidPlotLong}}
 #'
 #' @examples
-#' data("BatData", "EpfuNb2", "MyevNb2", package = "EcoCountHelper")
-#' scale2 <- function(x){(x - mean(x))/(2*sd(x))}
-#' ResidPlotter(BatData, "^[[:alpha:]]{4}", c("EpfuNb2", "MyevNb2"))
+#' data("BatDataWide", "EpfuNb2Wide", "MyevNb2Wide", package = "EcoCountHelper")
 #' 
-#' EpfuNb2ResidTests
-#' EpfuNb2SimResidPlot
-#' MyevNb2ResidTests
-#' MyevNb2SimResidPlot
+#' ResidPlotWide(BatDataWide, c("EpfuNb2Wide", "MyevNb2Wide"), "^[[:alpha:]]{4}")
+#' 
+#' EpfuNb2WideResidTests
+#' EpfuNb2WideSimResidPlot
+#' MyevNb2WideResidTests
+#' MyevNb2WideSimResidPlot
 #'
 #' @export
 
-ResidPlotter <- function(Data, GroupPat, ModNames, Nsims = 1000, TestVals = T){
+ResidPlotWide <- function(Data, ModNames, GroupPat = "^[[:alnum:]]+",
+                         Nsims = 1000, TestVals = T){
 
   ResidPlotterSub <- function(GroupMod){
     TmpMod <- get(Filter(function(x) inherits(get(x), "glmmTMB"), ls(pattern = GroupMod,
                                                                      pos = .GlobalEnv)), pos = .GlobalEnv)
     Group <- regmatches(GroupMod, regexpr(GroupPat, GroupMod))
 
-    ModTab <- simulate(TmpMod, nsim = Nsims)
+    ModTab <- stats::simulate(TmpMod, nsim = Nsims)
     SimMod <- do.call(cbind, ModTab)
-    SimModDharma <- createDHARMa(simulatedResponse = SimMod, observedResponse = Data[[Group]],
+    SimModDharma <- DHARMa::createDHARMa(simulatedResponse = SimMod, observedResponse = Data[[Group]],
                                  fittedPredictedResponse = predict(TmpMod), integerResponse = TRUE)
-    GroupResidTests <- testResiduals(SimModDharma)
+    GroupResidTests <- DHARMa::testResiduals(SimModDharma)
 
     title(sub = GroupMod, font.sub = 2)
-    ResidPlot <- recordPlot()
+    ResidPlot <- grDevices::recordPlot()
     assign(paste0(GroupMod, "SimResidPlot"), ResidPlot, pos = .GlobalEnv)
     if(TestVals == T){assign(paste0(GroupMod, "ResidTests"), GroupResidTests, pos = .GlobalEnv)}
   }

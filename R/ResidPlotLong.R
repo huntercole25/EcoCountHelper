@@ -4,6 +4,10 @@
 #' fit for models produced using \code{\link[glmmTMB]{glmmTMB}} with or without random effects.
 #'
 #' @param Data The unquoted name of the data frame or data table containing the raw data models are based on.
+#' 
+#' @param CountCol A character string specifying the name of the vector containing count data.
+#' 
+#' @param GroupCol A character string specifying the name of the vector containing group information (e.g., order, species) for each observation.
 #'
 #' @param Nsims A number indicating the number of data simulations to run with \code{\link[stats]{simulate}}.
 #'
@@ -13,6 +17,10 @@
 #' the column name containing the response variable of a model for (e.g., if the models "EpfuNb2" and "MyluNb2" are supplied for
 #' the \code{ModNames} argument, an appropriate regular expression would be "^[[:alpha:]]\{4\}" because the response
 #' variable columns are "Epfu" and "Mylu", respectively).
+#' 
+#' @param Looped A Boolean value indicating whether models were generated using a for loop or
+#' apply function that results in the "Data" value in the model output including an iterative subset. 
+#' Defaults to "T".
 #'
 #' @param TestVals A Boolean value indicating whether model fit test values should be generated alongside
 #' the plots this function creates.
@@ -23,15 +31,13 @@
 #' are named with the model name follow by "ResidTests" (e.g., the test values associated with a model named
 #' "EpfuNb2" would be named "EpfuNb2SimResidPlot").
 #'
-#' @section Details:
-#' It is important to note that if a custom-written function is used to manipulate data in any models (e.g.,
-#' if a user-written function is used to scale by two standard deciations instead of one as
-#' \code{\link[base]{scale}} does), that function must be defined in your global environment.
+#' @seealso \code{\link{ResidPlotWide}}
 #'
 #' @examples
-#' data("BatData", "EpfuNb2", "MyevNb2", package = "EcoCountHelper")
-#' scale2 <- function(x){(x - mean(x))/(2*sd(x))}
-#' ResidPlotter(BatData, "^[[:alpha:]]{4}", c("EpfuNb2", "MyevNb2"))
+#' data("BatDataLong", "EpfuNb2Long", "MyevNb2Long", package = "EcoCountHelper")
+#' 
+#' ResidPlotLong(BatDataLong, "Count", "Species",
+#'  c("EpfuNb2Long", "MyevNb2Long"), "^[[:alpha:]]{4}")
 #' 
 #' EpfuNb2ResidTests
 #' EpfuNb2SimResidPlot
@@ -40,7 +46,8 @@
 #'
 #' @export
 
-ResidPlotLong <- function(Data, CountCol, GroupCol, ModNames, GroupPat = "^[[:alnum:]]+", Looped = T, Nsims = 1000, TestVals = T){
+ResidPlotLong <- function(Data, CountCol, GroupCol, ModNames, GroupPat = "^[[:alnum:]]+",
+                          Looped = T, Nsims = 1000, TestVals = T){
   
   ResidPlotterSub <- function(GroupMod){
     TmpMod <- get(Filter(function(x) inherits(get(x), "glmmTMB"), ls(pattern = GroupMod,
@@ -49,22 +56,20 @@ ResidPlotLong <- function(Data, CountCol, GroupCol, ModNames, GroupPat = "^[[:al
     Group <- regmatches(GroupMod, regexpr(GroupPat, GroupMod))
     TmpFull <- Data[Data[[GroupCol]] == Group,]
     
-    TmpData <- Data[[CountCol]][Data[[GroupCol]] == Group]
-    
     if(Looped == T){
-      TmpMod <- update(TmpMod, data = TmpFull)
+      TmpMod <- stats::update(TmpMod, data = TmpFull)
     }
     
     
-    ModTab <- simulate(TmpMod, nsim = Nsims)
+    ModTab <- stats::simulate(TmpMod, nsim = Nsims)
     SimMod <- do.call(cbind, ModTab)
     
-    SimModDharma <- createDHARMa(simulatedResponse = SimMod, observedResponse = TmpData,
+    SimModDharma <- DHARMa::createDHARMa(simulatedResponse = SimMod, observedResponse = TmpFull[[CountCol]],
                                  fittedPredictedResponse = predict(TmpMod), integerResponse = TRUE)
-    GroupResidTests <- testResiduals(SimModDharma)
+    GroupResidTests <- DHARMa::testResiduals(SimModDharma)
     
     title(sub = GroupMod, font.sub = 2)
-    ResidPlot <- recordPlot()
+    ResidPlot <- grDevices::recordPlot()
     assign(paste0(GroupMod, "SimResidPlot"), ResidPlot, pos = .GlobalEnv)
     if(TestVals == T){assign(paste0(GroupMod, "ResidTests"), GroupResidTests, pos = .GlobalEnv)}
   }

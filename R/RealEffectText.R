@@ -26,28 +26,28 @@
 #' #The effect of a 10% change increase in
 #' #moon face illumination on Epfu activity
 #'
-#' data("EpfuNb2", "BatData", package = "EcoCountHelper")
+#' data("EpfuNb2Long", "BatData", package = "EcoCountHelper")
 #'
-#' RealEffectText(EpfuNb2, "scale2(MoonPct)",
-#'                 10, ScaleSds = 2,
+#' RealEffectText(EpfuNb2Long, "scale2(MoonPct)",
+#'                 0.1, ScaleSds = 2,
 #'                 PredVect = BatData$MoonPct,
 #'                 UnitSymb = "percent")
 #'
 #' @export
 
-RealEffectText <- function(Model, Predictor, UnitChange = 1, ConfInt = 95, ScaleSds = NULL, PredVect = NULL,
-                           UnitSymb = "unit"){
+RealEffectText <- function(Model, Predictor, UnitChange = 1, ConfInt = 95,
+                           ScaleSds = NULL, PredVect = NULL, UnitSymb = "unit"){
   PredBeta <- summary(Model)$coeff$cond[Predictor,1]
   PredSe <- summary(Model)$coeff$cond[Predictor,2]
 
   if(is.null(ScaleSds)==T){
     PctIncrease <- (-(1-exp(PredBeta)^UnitChange))*100
     FactIncrease <- exp(PredBeta)^UnitChange
-    PctConfidence <- (-(1-exp((qnorm(1-((100-ConfInt)/2/100))*PredSe)))^UnitChange)*100
+    PctConfidence <- (-(1-exp((stats::qnorm(1-((100-ConfInt)/2/100))*PredSe)))^UnitChange)*100
   }else{
-    PctIncrease <- (-(1-exp(PredBeta/(ScaleSds*sd(PredVect)))^UnitChange))*100
-    FactIncrease <- exp(PredBeta/(ScaleSds*sd(PredVect)))^UnitChange
-    PctConfidence <- (-(1-exp((qnorm(1-((100-ConfInt)/2/100))*PredSe)/(ScaleSds*sd(PredVect)))^UnitChange))*100
+    PctIncrease <- (-(1-exp(PredBeta/(ScaleSds*stats::sd(PredVect)))^UnitChange))*100
+    FactIncrease <- exp(PredBeta/(ScaleSds*stats::sd(PredVect)))^UnitChange
+    PctConfidence <- (-(1-exp((stats::qnorm(1-((100-ConfInt)/2/100))*PredSe)/(ScaleSds*stats::sd(PredVect)))^UnitChange))*100
   }
 
   if(PctIncrease >= 0){

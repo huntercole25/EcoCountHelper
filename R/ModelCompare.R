@@ -22,8 +22,9 @@
 #' to the \code{TopModOutName} argument.
 #'
 #' @examples
-#' data("EpfuNb1", "EpfuNb2", "MyevNb1",
-#'       "MyevNb2", package = "EcoCountHelper")
+#' data("EpfuNb1Long", "EpfuNb2Long", "MyevNb1Long",
+#'       "MyevNb2Long", package = "EcoCountHelper")
+#'       
 #' Species <- c("Epfu", "Myev")
 #' ModelCompare(Species, TestCompare)
 #' 
@@ -44,7 +45,7 @@ ModelCompare <- function(Groups, TopModOutName){
       TmpAic <- data.table::data.table(Model = ModVect[i], Aic = AIC(TmpMod), Subj = Group)
       AicList <- c(list(TmpAic), AicList)
     }
-    FinalAicTab <- rbindlist(AicList)
+    FinalAicTab <- data.table::rbindlist(AicList)
 
     assign(paste0(Group,"AIC"), FinalAicTab, envir = .GlobalEnv)
 

@@ -20,12 +20,12 @@
 #' argument. Plots that are not in the left-most columns will not have y-axis labels.
 #'
 #' @examples
-#' data("EpfuNb2", package = "EcoCountHelper")
-#' EffectsPlotter(EpfuNb2, c(":)", "!", "argument", "FirstColWidth",
+#' data("EpfuNb2Long", package = "EcoCountHelper")
+#' EffectsPlotter(EpfuNb2Long, c(":)", "!", "argument", "FirstColWidth",
 #'                            "the", "with", "adjusted", "be", "to",
 #'                            "need", "plots", "These"))
 #'                            
-#' ExPlot <- EpfuNb2EffectsPlot
+#' ExPlot <- EpfuNb2LongEffectsPlot
 #' 
 #' #First grid attempt
 #' 
@@ -48,27 +48,27 @@ DumbGrid <- function(..., Ncols, FirstColWidth = 1, SharedLegend = F){
   nplot <- length(plots)
 
   for(i in setdiff(seq(1, nplot, 1), seq(1, nplot, Ncols))){
-    plots[[i]] <- plots[[i]] + theme(axis.title.y = element_blank(), axis.text.y = element_blank())
+    plots[[i]] <- plots[[i]] + ggplot2::theme(axis.title.y = element_blank(), axis.text.y = element_blank())
 }
   plnums <- seq(1, nplot, 1)
   nox <- plnums[plnums < max(seq(1, nplot, Ncols))]
 
   for(i in nox){
-    plots[[i]] <- plots[[i]] + theme(axis.title.x = element_blank())
+    plots[[i]] <- plots[[i]] + ggplot2::theme(axis.title.x = element_blank())
   }
 
   if(SharedLegend == T){
-    shleg <- get_legend(plots[[1]])
+    shleg <- cowplot::get_legend(plots[[1]])
     for(i in 1:length(plots)){
-      plots[[i]] <- plots[[i]] + theme(legend.position = "none")
+      plots[[i]] <- plots[[i]] + ggplot2::theme(legend.position = "none")
     }
   }
 
-  Tplot <- plot_grid(plotlist = plots, ncol = Ncols, rel_widths = c(FirstColWidth,rep(1, Ncols - 1)),
+  Tplot <- cowplot::plot_grid(plotlist = plots, ncol = Ncols, rel_widths = c(FirstColWidth,rep(1, Ncols - 1)),
                      align = "v", axis = "tbr")
 
   if(SharedLegend == T){
-    Tplot <- plot_grid(Tplot, shleg, ncol = 2, rel_widths = c(9,1))
+    Tplot <- cowplot::plot_grid(Tplot, shleg, ncol = 2, rel_widths = c(9,1))
   }
 
   Tplot

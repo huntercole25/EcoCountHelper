@@ -22,7 +22,7 @@
 #' @export
 
 theme_nocturnal <- function(){
-  theme(plot.background = element_rect(fill = "black"),
+  ggplot2::theme(plot.background = element_rect(fill = "black"),
       panel.background = element_rect(fill = "black"),
       panel.grid.major = element_line(color = "grey20"),
       panel.grid.minor = element_line(color = "grey20"),

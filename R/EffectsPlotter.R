@@ -2,10 +2,8 @@
 #'
 #' This function produces effects plots for the conditional model of model objects produced by
 #' \code{\link[glmmTMB]{glmmTMB}}. Effects can be plotted for multiple models in a single function call.
-#' These effects plots are based on those found in: \emph{Bolker, Ben, et al.
-#' "Owls example: a zero-inflated, generalized linear mixed model for count data."
-#' Departments of Mathematics & Statistics and Biology,
-#' McMaster University, Hamilton (2012)}.
+#' These effects plots are based on those found in 
+#' \href{https://groups.nceas.ucsb.edu/non-linear-modeling/projects/owls/WRITEUP/owls.pdf/@@@download}{this document.}
 #'
 #' @param TopMods This argument can accept multiple input types, and is used to specify which models effects plots
 #' should be generated for. If an effects plot is desired for a single model, users can supply the unquoted model
@@ -20,7 +18,7 @@
 #'
 #' @param TopModCol A character string specifying the name of the column containing model object names in a
 #' data frame or data table. This argument should only be used if \code{TopMods} is supplied with the name of
-#' a data frame or data table.
+#' a data frame or data table such as the top model table returned by \code{\link{ModelCompare}}.
 #'
 #' @param ConfInts A numeric vector specifying up to three condifence intervals as percent values from largest
 #' to smallest (e.g., for 80\%, 90\%, and 95\% confidence intervals, supply \code{ConfInts = c(95, 90, 80)}).
@@ -40,35 +38,37 @@
 #' to this function must have the same model formula.
 #'
 #' @examples
-#' data("EpfuNb2", "MyevNb2", package = "EcoCountHelper")
-#'
+#' data("EpfuNb2Long", "MyevNb2Long", package = "EcoCountHelper")
+#' Labels <- letters[1:12]
+#' 
 #' #Effects plot for a single model
 #'
-#' Labels <- letters[1:12]
-#' EffectsPlotter(EpfuNb2, Labels)
-#' EpfuNb2EffectsPlot
+#' EffectsPlotter(EpfuNb2Long, Labels)
+#' EpfuNb2LongEffectsPlot
 #'
 #' #Effects plot for multiple models specified
 #' #in a character vector.
 #'
-#' Mods <- c("EpfuNb2", "MyevNb2")
+#' Mods <- c("EpfuNb2Long", "MyevNb2Long")
 #' EffectsPlotter(Mods, Labels)
-#' EpfuNb2EffectsPlot
-#' MyevNb2EffectsPlot
+#' EpfuNb2LongEffectsPlot
+#' MyevNb2LongEffectsPlot
 #'
 #' #Effects plot for multiple models specified
 #' #in a data frame
 #'
 #' ModTable <- data.frame(Species = c("Epfu", "Myev"),
-#'                         Mods = c("EpfuNb2", "MyevNb2"))
+#'                         Mods = c("EpfuNb2Long", "MyevNb2Long"))
+#'                         
 #' EffectsPlotter(ModTable, Labels, "Mods")
-#' EpfuNb2EffectsPlot
-#' MyevNb2EffectsPlot
+#' 
+#' EpfuNb2LongEffectsPlot
+#' MyevNb2LongEffectsPlot
 #'
 #' @export
 
-EffectsPlotter <- function(TopMods, ParamLabs = NULL, TopModCol = NULL, ConfInts = c(90, 80), Scaled = T,
-                               ThemeBlack = T){
+EffectsPlotter <- function(TopMods, ParamLabs = NULL, TopModCol = NULL,
+                           ConfInts = c(90, 80), Scaled = T, ThemeBlack = T){
   if("glmmTMB" %in% class(TopMods)){
     TmpMod <- deparse(substitute(TopMods))
   }else{
@@ -94,38 +94,38 @@ EffectsPlotter <- function(TopMods, ParamLabs = NULL, TopModCol = NULL, ConfInts
       barcol = "grey40"
     }
 
-    EffectsPlot <- ggplot(data = PlotData)
+    EffectsPlot <- ggplot2::ggplot(data = PlotData)
 
     if(Scaled == T){
       EffectsPlot <- EffectsPlot +
-        geom_vline(xintercept = 0, linetype = 2, size = 1, color = "red")
+        ggplot2::geom_vline(xintercept = 0, linetype = 2, size = 1, color = "red")
     }
 
     if(length(ConfInts) >= 1){
       EffectsPlot <- EffectsPlot +
-        geom_errorbar(aes(xmin = Estimate - (`Std. Error`*qnorm(1-((100-ConfInts[1])/2/100))),
-                          xmax = Estimate + (`Std. Error`*qnorm(1-((100-ConfInts[1])/2/100))),
+        ggplot2::geom_errorbar(aes(xmin = Estimate - (`Std. Error`*stats::qnorm(1-((100-ConfInts[1])/2/100))),
+                          xmax = Estimate + (`Std. Error`*stats::qnorm(1-((100-ConfInts[1])/2/100))),
                           x = Estimate, y = Order), color = barcol, size = 1, width = 0.7)
     }
     if(length(ConfInts) >= 2){
       EffectsPlot <- EffectsPlot +
-        geom_errorbar(aes(xmin = Estimate - (`Std. Error`*qnorm(1-((100-ConfInts[2])/2/100))),
-                          xmax = Estimate + (`Std. Error`*qnorm(1-((100-ConfInts[2])/2/100))),
+        ggplot2::geom_errorbar(aes(xmin = Estimate - (`Std. Error`*stats::qnorm(1-((100-ConfInts[2])/2/100))),
+                          xmax = Estimate + (`Std. Error`*stats::qnorm(1-((100-ConfInts[2])/2/100))),
                           x = Estimate, y = Order), color = barcol, size = 1, width = 0.5)
     }
     if(length(ConfInts) == 3){
       EffectsPlot <- EffectsPlot +
-        geom_errorbar(aes(xmin = Estimate - (`Std. Error`*qnorm(1-((100-ConfInts[3])/2/100))),
-                          xmax = Estimate + (`Std. Error`*qnorm(1-((100-ConfInts[3])/2/100))),
+        ggplot2::geom_errorbar(aes(xmin = Estimate - (`Std. Error`*stats::qnorm(1-((100-ConfInts[3])/2/100))),
+                          xmax = Estimate + (`Std. Error`*stats::qnorm(1-((100-ConfInts[3])/2/100))),
                           x = Estimate, y = Order), color = barcol, size = 1, width = 0.3)
     }
 
     EffectsPlot <- EffectsPlot +
-      geom_point(aes(x = Estimate, y = Order), color = pocol, size = 3) +
-      scale_y_discrete(labels = ParamLabs, drop = T) +
-      labs(x = "Estimate", y = "Term", title = TopMod) +
-      theme_light() +
-      theme(plot.title = element_text(hjust = 0.5))
+      ggplot2::geom_point(aes(x = Estimate, y = Order), color = pocol, size = 3) +
+      ggplot2::scale_y_discrete(labels = ParamLabs, drop = T) +
+      ggplot2::labs(x = "Estimate", y = "Term", title = TopMod) +
+      ggplot2::theme_light() +
+      ggplot2::theme(plot.title = element_text(hjust = 0.5))
 
     if(ThemeBlack == T){EffectsPlot <- EffectsPlot + theme_nocturnal()}
 
