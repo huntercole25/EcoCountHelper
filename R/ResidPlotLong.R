@@ -39,10 +39,10 @@
 #' ResidPlotLong(BatDataLong, "Count", "Species",
 #'  c("EpfuNb2Long", "MyevNb2Long"), "^[[:alpha:]]{4}")
 #' 
-#' EpfuNb2ResidTests
-#' EpfuNb2SimResidPlot
-#' MyevNb2ResidTests
-#' MyevNb2SimResidPlot
+#' EpfuNb2LongResidTests
+#' EpfuNb2LongSimResidPlot
+#' MyevNb2LongResidTests
+#' MyevNb2LongSimResidPlot
 #'
 #' @export
 
