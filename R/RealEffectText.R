@@ -6,7 +6,7 @@
 #'
 #' @param Model The unquoted name of the model object of interest.
 #'
-#' @param Predictor A character string representing the predictor of interest. Appropriate values can be found
+#' @param Predictor A character string representing the predictor of interest. Appropriate values can be found by 
 #' entering \code{row.names(summary(x)$coeff$cond)} in the console, where x is the model of interest.
 #'
 #' @param UnitChange A number indicating the unscaled change in a predictor for which an effect should be returned.
@@ -32,7 +32,7 @@
 #'                 0.1, ScaleSds = 2,
 #'                 PredVect = BatDataLong$MoonPct)
 #'
-#' @export
+
 
 RealEffectText <- function(Model, Predictor, UnitChange = 1, ConfInt = 95,
                            ScaleSds = NULL, PredVect = NULL, UnitSymb = "unit"){

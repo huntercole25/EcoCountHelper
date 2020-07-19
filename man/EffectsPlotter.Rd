@@ -32,10 +32,10 @@ a data frame or data table such as the top model table returned by \code{\link{M
 \item{ConfInts}{A numeric vector specifying up to three condifence intervals as percent values from largest
 to smallest (e.g., for 80\%, 90\%, and 95\% confidence intervals, supply \code{ConfInts = c(95, 90, 80)}).}
 
-\item{Scaled}{A Boolean value indicating whether model estimates are scaled (T) or not (F). When \code{Scaled = T},
+\item{Scaled}{A logical value indicating whether model estimates are scaled (T) or not (F). When \code{Scaled = T},
 there will be a dotted \code{\link[ggplot2]{geom_abline}} where estimates = 0.}
 
-\item{ThemeBlack}{A Boolean value indicating whether \code{\link{theme_nocturnal}} should be applied to plots
+\item{ThemeBlack}{A logical value indicating whether \code{\link{theme_nocturnal}} should be applied to plots
 (T) or not (F).}
 }
 \value{

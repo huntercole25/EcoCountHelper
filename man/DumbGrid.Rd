@@ -14,7 +14,7 @@ DumbGrid(..., Ncols, FirstColWidth = 1, SharedLegend = F)
 \item{FirstColWidth}{A number indicating the relative width of the first column of plots compared to all
 other columns. A value of 1 sets the left-most column at the same width as all others.}
 
-\item{SharedLegend}{A Boolean value indicating whether plots should share a legend (T), or have their own
+\item{SharedLegend}{A logical value indicating whether plots should share a legend (T), or have their own
 legend (F).}
 }
 \value{

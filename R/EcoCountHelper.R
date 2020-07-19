@@ -83,7 +83,9 @@
 #' predictors within the observed range of values, one cannot ascertain the ecological 
 #' significance of predictors this way. Users can assess the "real world effect" of a given 
 #' unscaled change in a predictor with \code{\link{RealEffectText}} which returns a sentence 
-#' describing the a group's predicted response to a specified change in a predictor.
+#' describing the a group's predicted response to a specified change in a predictor, or 
+#' \code{\link{RealEffectTabLong}}/\code{\link{RealEffectTabWide}} which returns a tabulated version of
+#' \code{\link{RealEffectText}}'s output.
 #' 
 #' @section Single Group Pipeline Notes:
 #' While the pipeline outlined above can be used for individual response groups rather 

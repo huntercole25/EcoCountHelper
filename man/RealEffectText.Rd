@@ -17,7 +17,7 @@ RealEffectText(
 \arguments{
 \item{Model}{The unquoted name of the model object of interest.}
 
-\item{Predictor}{A character string representing the predictor of interest. Appropriate values can be found
+\item{Predictor}{A character string representing the predictor of interest. Appropriate values can be found by 
 entering \code{row.names(summary(x)$coeff$cond)} in the console, where x is the model of interest.}
 
 \item{UnitChange}{A number indicating the unscaled change in a predictor for which an effect should be returned.}
