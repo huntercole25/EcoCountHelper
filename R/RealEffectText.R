@@ -32,6 +32,7 @@
 #'                 0.1, ScaleSds = 2,
 #'                 PredVect = BatDataLong$MoonPct)
 #'
+#' @export
 
 
 RealEffectText <- function(Model, Predictor, UnitChange = 1, ConfInt = 95,
