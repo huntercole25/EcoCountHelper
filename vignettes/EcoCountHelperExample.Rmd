@@ -1,0 +1,86 @@
+---
+title: "Analyzing Wildlife Count Data using EcoCountHelper"
+date: March 26, 2021
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
+vignette: >
+  %\VignetteIndexEntry{Analyzing Wildlife Count Data using EcoCountHelper}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: VignetteRefs.bib
+csl: PeerJCitations.csl
+link-citations: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Package Purpose
+
+`EcoCountHelper` is a R package designed to make the meaningful analysis of wildlife count data through generalized linear mixed-models (GLMMs) more accessible to land and wildlife managers with limited programmatic experience. GLMMs can be a powerful and flexible tool for analyzing hierarchical data (e.g., repeated counts of bat call sequences at multiple sites), but the lack of standardization surrounding these analyses paired with the requisite level of programmatic competence can make them daunting to approach for many biologists and ecologists. The `EcoCountHelper` package provides a structured framework for approaching GLMM analyses that simplifies the coding process necessary to conduct such analyses.  
+
+## Understanding GLMMs and Reading Materials
+
+Put very simply, GLMMs are a linear modeling technique that allow researchers to assess the effect of both numeric and categorical predictors on a response variable while allowing one to account for non-independence of data (e.g., repeated measures of a response variable that come from the same location) through random effects, and to specify the error distribution a model should use (e.g., Poisson, Gaussian, negative binomial). It is of paramount importance that anyone who uses this package understands the fundamentals of GLMMs. There are no programmatic safeguards that prevent poorly-constructed models from being used to draw scientific conclusions, and thus it is imperative that anyone who intends to use `EcoCountHelper` first familiarizes themselves with the basics of GLMM analysis. Rather than rehashing points made in expertly-written overviews of GLMMs, we highly recommend (at a minimum) fully reading the following cited texts before going forward with any GLMM analyses [@harrison_brief_2018; @bolker_generalized_2009].  
+
+Furthermore, understanding the fundamentals of zero-inflation and GLMMs incorporating zero-inflated models will be beneficial for properly modeling many wildlife count datasets. A dataset is zero-inflated when there are substantially more zeros present than a specified model structure and error distribution predict. To account for zeros that are not predicted by the conditional model, zero-inflated models can be used to model the process by which additional zeroes arise. More information on zero-inflation, zero-inflated negative binomial (ZINB) models, and zero-inflated Poisson (ZIP) models can be found in the following references [@martin_zero_2005; @brooks_modeling_2017].
+
+Finally, it is important to understand how to use the R package `glmmTMB`, the package through which users of `EcoCountHelper` must construct their models, before using `EcoCountHelper`. Information regarding the use and syntax of `glmmTMB` can be found in the following cited documents [@brooks_modeling_2017; @brooks_glmmtmb_2017; @bolker_getting_2016].  
+
+## Installing and Citing EcoCountHelper  
+
+### Installing  
+
+The simplest way to install `EcoCountHelper` is to use the `install_github` function from the `devtools` package. Before proceeding with this the installation of EcoCountHelper, you must first ensure that you have the software "Rtools" installed [(available through this link)](https://cran.r-project.org/bin/windows/Rtools/), then ensure `devtools` is installed. To install and load `devtools` then install `EcoCountHelper`, use the code below:  
+```{r Install, eval=FALSE}
+require(devtools)
+install_github("huntercole25/EcoCountHelper")
+```
+  
+### Citing  
+
+After installing EcoCountHelper, to see citation information for the package use the line of code below:
+```{r Cite, eval=FALSE}
+citation("EcoCountHelper")
+```
+  
+## Requisite Data Preparation & Model Construction  
+
+### Basic Model & Data Structure for glmmTMB Models  
+
+Much like the equations many people were exposed to in elementary algebra classes, glmmTMB **conditional models** have two sides; the left side contains the response variable, and the right side contains predictors (explanatory variables). A conditional model is the formula that specifies the predictors for which probability distributions (and consequentially coefficients) will be developed in relation to the response variable. Throughout this example we will be analyzing a dataset pertaining to bat activity throughout Grand Teton National Park. In this case, bat activity (call sequences recorded per site-night) will be the response variable on the left side of the conditional model formula, and explanatory variables such as elevation and distance to water will be on the right side of the conditional model formula. A coefficient describing the linear relationship between the predictor and the response variable will be calculated for each predictor on the right side of the formula.  
+
+In order to model the data described above, a data frame or data table will need to be prepared that has a vector (column) for the response variable, as well as a vector for each predictor that will be used in the conditional model. Wildlife count data often contain multiple response variables (e.g., ultrasonic passive acoustic monitoring data may contain call sequence counts for multiple bat species, avian point counts may contain counts for multiple bird species). To demonstrate one method of incorporating multiple response variables into a single data frame, let's take a look at the *wide-form* Grand Teton bat data:  
+```{r DataWide}
+library(EcoCountHelper)
+data("BatDataWide", package = "EcoCountHelper")
+head(BatDataWide)
+```
+  
+  
+For more information regarding what each vector in the data above represents, please run the following line of code: `?BatDataWide`. For information regarding data collection methods, please see Cole et al., 2021.  
+
+In this case, the response variables (named with the four-letter codes for each species; Epfu, Laci, Lano, Myev, Mylu, Myvo and Myyu) each have their own vector in the data table, and each site-night occupies a single row. When data containing multiple response variables is formatted in this way, it is in wide-form. Another acceptable data format is *long-form*, with each combination of the unit of replication (in this case site-nights) and response variable occupying their own rows, a vector specifying the response variable (in this case, species) that a row corresponds to, and a vector detailing the value of the response variable (in this case, count). Here is a long-form version of the data shown above:  
+```{r BatDataLong}
+data("BatDataLong", package = "EcoCountHelper")
+head(BatDataLong)
+```
+  
+Both long- and wide- form data can be used to build GLMMs using `glmmTMB`, and both formats are also compatible with `EcoCountHelper`. Note that in both data formats, each row provides a response value as well as the values for all predictors on a given site-night. Also notice that all numeric predictors are named with the suffix "Scale". All of these predictors have been standardized which puts all data on the same scale. When vectors with different units of measurement are standardized, their parameter estimates are more directly comparable. Model convergence is often more easily attained when numeric predictor vectors are scaled. A good resource for information on standardizing data can be found [here](https://sebastianraschka.com/Articles/2014_about_feature_scaling.html#about-standardization).
+  
+Data are frequently standardized by subtracting the mean of a vector from all data in that vector and dividing all values by the vector's standard deviation. This type of standardizing can be accomplished with base R's `scale` function. The data shown above are scaled by subtracting the mean from all values then dividing by *two* standard deviations. This can be done using EcoCountHelper's `scale2` function. By dividing all data in a vector by two standard deviations of that vector, parameter estimates for all standardized variables are directly comparable to those of categorical (factor) variables with two levels [@gelman_scaling_2008]. In the data used in this example, "Year" has two levels (2016 and 2017). By standardizing all numeric predictors by subtracting the mean for each vector and dividing by two standard deviations, we are able to directly compare the magnitude and surrounding confidence of the parameter estimates for all continuous variables in our models as well as the binary categorical variable "Year". All numeric variables have already been standardized using `scale2` in the previously loaded data, but an example of how we calculated the standardized "MoonScale" vector using the "MoonPct" and `scale2` function is shown below.
+  
+```{r scale2, eval=FALSE}
+# data.frame syntax
+BatDataWide$MoonScale <- scale2(BatDataWide$MoonPct)
+
+# data.table syntax
+BatDataWide[,MoonScale := scale2(MoonPct)]
+```
+  
+
+
+## References
