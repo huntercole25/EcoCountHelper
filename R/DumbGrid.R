@@ -20,12 +20,12 @@
 #' argument. Plots that are not in the left-most columns will not have y-axis labels.
 #'
 #' @examples
-#' data("EpfuNb2Long", package = "EcoCountHelper")
-#' EffectsPlotter(EpfuNb2Long, c(":)", "!", "argument", "FirstColWidth",
+#' data("Epfu_Nb2_Long", package = "EcoCountHelper")
+#' EffectsPlotter(Epfu_Nb2_Long, c(":)", "!", "argument", "FirstColWidth",
 #'                            "the", "with", "adjusted", "be", "to",
 #'                            "need", "plots", "These"))
 #'                            
-#' ExPlot <- EpfuNb2LongEffectsPlot
+#' ExPlot <- Epfu_Nb2_LongEffectsPlot
 #' 
 #' #First grid attempt
 #' 

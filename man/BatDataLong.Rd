@@ -3,9 +3,9 @@
 \docType{data}
 \name{BatDataLong}
 \alias{BatDataLong}
-\title{Bat Data from Grand Teton National Park (2016-2017) in Wide-form}
+\title{Bat Data from Grand Teton National Park (2016-2017) in Long-form}
 \format{
-A data table with 840 rows and 21 variables:
+A data table with 5880 rows and 25 variables:
 \describe{
   \item{Site}{The site from which the data were collected as a factor.}
   \item{SampleDate}{The date on which data collection began.}
@@ -22,7 +22,7 @@ A data table with 840 rows and 21 variables:
   \item{ForestScale}{ManualForestPct standardized using the \code{\link{scale2}} function.}
   \item{ManualDevelPct}{The proportion of land surrounding the data collection site that was developed.}
   \item{DevelScale}{ManualDevelPct standardized using the \code{\link{scale2}} function.}
-  \item{WaterDist}{The distance to the nearest water source.}
+  \item{WaterDist}{The distance to the nearest water source in meters.}
   \item{WaterScale}{WaterDist standardized using the \code{\link{scale2}} function.}
   \item{Elev}{The elevation of the data collection site in meters.}
   \item{ElevScale}{Elev standardized using the \code{\link{scale2}} function.}
@@ -30,14 +30,14 @@ A data table with 840 rows and 21 variables:
   \item{BrightScale}{BrightCount standardized using the \code{\link{scale2}} function.}
   \item{PropCool}{The proportion of lights with a subjectively classified cool hue surrounding the site of data collection.}
   \item{CoolScale}{PropCool standardized using the \code{\link{scale2}} function.}
-  \item{StrWeight}{The summed inverse of the square root of distances to porous buildings surrounding the site of data collection.}
+  \item{StrWeight}{The summed inverse of the square root of distances (in meters) to porous buildings surrounding the site of data collection.}
   \item{StrScale}{StrWeight standardized using the \code{\link{scale2}} function.}
 }
 }
 \usage{
-data(BatDataWide)
+data(BatDataLong)
 }
 \description{
-The dataset used for the case study in Cole et al., 2021 in wide form.
+The dataset used for the case study in Cole et al., 2021 in long-form.
 }
 \keyword{datasets}

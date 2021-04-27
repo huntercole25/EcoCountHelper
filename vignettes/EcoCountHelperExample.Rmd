@@ -1,10 +1,10 @@
 ---
 title: "Analyzing Wildlife Count Data using EcoCountHelper"
-date: March 26, 2021
+date: April 26, 2021
 output:
   rmarkdown::html_vignette:
     toc: true
-    toc_depth: 3
+    toc_depth: 4
 vignette: >
   %\VignetteIndexEntry{Analyzing Wildlife Count Data using EcoCountHelper}
   %\VignetteEngine{knitr::rmarkdown}
@@ -15,64 +15,70 @@ link-citations: yes
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE)
 ```
 
 ## Package Purpose
 
-`EcoCountHelper` is a R package designed to make the meaningful analysis of wildlife count data through generalized linear mixed-models (GLMMs) more accessible to land and wildlife managers with limited programmatic experience. GLMMs can be a powerful and flexible tool for analyzing hierarchical data (e.g., repeated counts of bat call sequences at multiple sites), but the lack of standardization surrounding these analyses paired with the requisite level of programmatic competence can make them daunting to approach for many biologists and ecologists. The `EcoCountHelper` package provides a structured framework for approaching GLMM analyses that simplifies the coding process necessary to conduct such analyses.  
+`EcoCountHelper` is a R package designed to make the meaningful analysis of wildlife count data through generalized linear mixed-models (GLMMs) more accessible to land and wildlife managers with limited programmatic experience. GLMMs can be a powerful and flexible tool for analyzing hierarchical data (e.g., repeated counts of bat call sequences at multiple sites), but the lack of standardization surrounding these analyses paired with the requisite level of programmatic competence can make them daunting to approach for many biologists and ecologists. The `EcoCountHelper` package provides a structured framework for approaching GLMM analyses that simplifies the coding process necessary to conduct such analyses.
 
 ## Understanding GLMMs and Reading Materials
 
-Put very simply, GLMMs are a linear modeling technique that allow researchers to assess the effect of both numeric and categorical predictors on a response variable while allowing one to account for non-independence of data (e.g., repeated measures of a response variable that come from the same location) through random effects, and to specify the error distribution a model should use (e.g., Poisson, Gaussian, negative binomial). It is of paramount importance that anyone who uses this package understands the fundamentals of GLMMs. There are no programmatic safeguards that prevent poorly-constructed models from being used to draw scientific conclusions, and thus it is imperative that anyone who intends to use `EcoCountHelper` first familiarizes themselves with the basics of GLMM analysis. Rather than rehashing points made in expertly-written overviews of GLMMs, we highly recommend (at a minimum) fully reading the following cited texts before going forward with any GLMM analyses [@harrison_brief_2018; @bolker_generalized_2009].  
+Put very simply, GLMMs are a linear modeling technique that allow researchers to assess the effect of both numeric and categorical predictors on a response variable while allowing one to account for non-independence of data (e.g., repeated measures of a response variable that come from the same location) through random effects, and to specify the error distribution a model should use (e.g., Poisson, Gaussian, negative binomial). It is of paramount importance that anyone who uses this package understands the fundamentals of GLMMs. There are no programmatic safeguards that prevent poorly-constructed models from being used to draw scientific conclusions, and thus it is imperative that anyone who intends to use `EcoCountHelper` first familiarizes themselves with the basics of GLMM analysis. Rather than rehashing points made in expertly-written overviews of GLMMs, we highly recommend (at a minimum) fully reading the following cited texts before going forward with any GLMM analyses [@harrison_brief_2018; @bolker_generalized_2009].
 
-Furthermore, understanding the fundamentals of zero-inflation and GLMMs incorporating zero-inflated models will be beneficial for properly modeling many wildlife count datasets. A dataset is zero-inflated when there are substantially more zeros present than a specified model structure and error distribution predict. To account for zeros that are not predicted by the conditional model, zero-inflated models can be used to model the process by which additional zeroes arise. More information on zero-inflation, zero-inflated negative binomial (ZINB) models, and zero-inflated Poisson (ZIP) models can be found in the following references [@martin_zero_2005; @brooks_modeling_2017].
+Furthermore, understanding the fundamentals of zero-inflation and GLMMs incorporating zero-inflated models will be beneficial for properly modeling many wildlife count datasets. A dataset is zero-inflated when there are substantially more zeros present than a specified model structure and error distribution predict. To account for zeros that are not predicted by the conditional model, zero-inflated models can be used to model the process by which additional zeros arise. More information on zero-inflation, zero-inflated negative binomial (ZINB) models, and zero-inflated Poisson (ZIP) models can be found in the following references [@martin_zero_2005; @brooks_modeling_2017].
 
-Finally, it is important to understand how to use the R package `glmmTMB`, the package through which users of `EcoCountHelper` must construct their models, before using `EcoCountHelper`. Information regarding the use and syntax of `glmmTMB` can be found in the following cited documents [@brooks_modeling_2017; @brooks_glmmtmb_2017; @bolker_getting_2016].  
+Finally, it is important to understand how to use the R package `glmmTMB`, the package through which users of `EcoCountHelper` must construct their models, before using `EcoCountHelper`. Information regarding the use and syntax of `glmmTMB` can be found in the following cited documents [@brooks_modeling_2017; @brooks_glmmtmb_2017; @bolker_getting_2016].
 
-## Installing and Citing EcoCountHelper  
+## Installing and Citing EcoCountHelper
 
-### Installing  
+### Installing
+While obvious, it is important to have an appropriate version of R installed on your machine. The earliest version of R that this package has been tested with is 3.6.3, and thus we recommendupdating your R install if you are using an earlier version of R.
 
-The simplest way to install `EcoCountHelper` is to use the `install_github` function from the `devtools` package. Before proceeding with this the installation of EcoCountHelper, you must first ensure that you have the software "Rtools" installed [(available through this link)](https://cran.r-project.org/bin/windows/Rtools/), then ensure `devtools` is installed. To install and load `devtools` then install `EcoCountHelper`, use the code below:  
+The simplest way to install `EcoCountHelper` is to use the `install_github` function from the `devtools` package. Before proceeding with this the installation of EcoCountHelper, you must first ensure that you have the software "Rtools" installed [(available through this link)](https://cran.r-project.org/bin/windows/Rtools/), then ensure `devtools` is installed. To install and load `devtools` then install `EcoCountHelper`, use the code below:
+
 ```{r Install, eval=FALSE}
 require(devtools)
-install_github("huntercole25/EcoCountHelper")
+install_github(repo = "huntercole25/EcoCountHelper", build_vignettes = T)
 ```
-  
-### Citing  
+
+### Citing
 
 After installing EcoCountHelper, to see citation information for the package use the line of code below:
+
 ```{r Cite, eval=FALSE}
 citation("EcoCountHelper")
 ```
-  
-## Requisite Data Preparation & Model Construction  
 
-### Basic Model & Data Structure for glmmTMB Models  
+## Requisite Data Preparation & Model Construction
 
-Much like the equations many people were exposed to in elementary algebra classes, glmmTMB **conditional models** have two sides; the left side contains the response variable, and the right side contains predictors (explanatory variables). A conditional model is the formula that specifies the predictors for which probability distributions (and consequentially coefficients) will be developed in relation to the response variable. Throughout this example we will be analyzing a dataset pertaining to bat activity throughout Grand Teton National Park. In this case, bat activity (call sequences recorded per site-night) will be the response variable on the left side of the conditional model formula, and explanatory variables such as elevation and distance to water will be on the right side of the conditional model formula. A coefficient describing the linear relationship between the predictor and the response variable will be calculated for each predictor on the right side of the formula.  
+### Basic Data and Model Structure for glmmTMB Models {#DataStr}
 
-In order to model the data described above, a data frame or data table will need to be prepared that has a vector (column) for the response variable, as well as a vector for each predictor that will be used in the conditional model. Wildlife count data often contain multiple response variables (e.g., ultrasonic passive acoustic monitoring data may contain call sequence counts for multiple bat species, avian point counts may contain counts for multiple bird species). To demonstrate one method of incorporating multiple response variables into a single data frame, let's take a look at the *wide-form* Grand Teton bat data:  
+Much like the equations many people were exposed to in elementary algebra classes, glmmTMB **conditional models** have two sides; the left side contains the response variable, and the right side contains predictors (explanatory variables). A conditional model is the formula that specifies the predictors for which probability distributions (and consequentially coefficients) will be developed in relation to the response variable. Throughout this example we will be analyzing a dataset pertaining to bat activity throughout Grand Teton National Park. In this case, bat activity (call sequences recorded per site-night) will be the response variable on the left side of the conditional model formula, and explanatory variables such as elevation and distance to water will be on the right side of the conditional model formula. A coefficient describing the linear relationship between the predictor and the response variable will be calculated for each predictor on the right side of the formula.
+
+In order to model the data described above, a data frame or data table will need to be prepared that has a vector (column) for the response variable, as well as a vector for each predictor that will be used in the conditional model. Wildlife count data often contain multiple response variables (e.g., ultrasonic passive acoustic monitoring data may contain call sequence counts for multiple bat species, avian point counts may contain counts for multiple bird species). To demonstrate one method of incorporating multiple response variables into a single data frame, let's take a look at the *wide-form* Grand Teton bat data:
+
 ```{r DataWide}
 library(EcoCountHelper)
 data("BatDataWide", package = "EcoCountHelper")
 head(BatDataWide)
 ```
-  
-  
-For more information regarding what each vector in the data above represents, please run the following line of code: `?BatDataWide`. For information regarding data collection methods, please see Cole et al., 2021.  
 
-In this case, the response variables (named with the four-letter codes for each species; Epfu, Laci, Lano, Myev, Mylu, Myvo and Myyu) each have their own vector in the data table, and each site-night occupies a single row. When data containing multiple response variables is formatted in this way, it is in wide-form. Another acceptable data format is *long-form*, with each combination of the unit of replication (in this case site-nights) and response variable occupying their own rows, a vector specifying the response variable (in this case, species) that a row corresponds to, and a vector detailing the value of the response variable (in this case, count). Here is a long-form version of the data shown above:  
+For more information regarding what each vector in the data above represents, please run the following line of code: `?BatDataWide`. For information regarding data collection methods, please see Cole et al., 2021.
+
+In this case, the response variables (named with the four-letter codes for each species; Epfu, Laci, Lano, Myev, Mylu, Myvo and Myyu) each have their own vector in the data table, and each site-night occupies a single row. When data containing multiple response variables is formatted in this way, it is in wide-form. Another acceptable data format is *long-form*, with each combination of the unit of replication (in this case site-nights) and response variable occupying their own rows, a vector specifying the response variable (in this case, species) that a row corresponds to, and a vector detailing the value of the response variable (in this case, count). Here is a long-form version of the data shown above:
+
 ```{r BatDataLong}
 data("BatDataLong", package = "EcoCountHelper")
 head(BatDataLong)
 ```
-  
-Both long- and wide- form data can be used to build GLMMs using `glmmTMB`, and both formats are also compatible with `EcoCountHelper`. Note that in both data formats, each row provides a response value as well as the values for all predictors on a given site-night. Also notice that all numeric predictors are named with the suffix "Scale". All of these predictors have been standardized which puts all data on the same scale. When vectors with different units of measurement are standardized, their parameter estimates are more directly comparable. Model convergence is often more easily attained when numeric predictor vectors are scaled. A good resource for information on standardizing data can be found [here](https://sebastianraschka.com/Articles/2014_about_feature_scaling.html#about-standardization).
-  
+
+Both long- and wide- form data can be used to build GLMMs using `glmmTMB`, and both formats are also compatible with `EcoCountHelper`. Note that in both data formats, each row provides a response value as well as the values for all predictors on a given site-night. With an understanding of long- and wide-form data established, we will be using the example wide-form data, "BatDataWide", for the majority of the remainder of this example. After the entire process associated with `EcoCountHelper` has been addressed using wide-form data, we will provide an explanation of the small changes to the workflow required to use long-form data with this package.
+
+Notice that all numeric predictors have a second associated vector that is named with the suffix "Scale". All of these predictors have been standardized which puts all data on the same scale. When vectors with different units of measurement are standardized, their parameter estimates are more directly comparable. Model convergence is often more easily attained when numeric predictor vectors are scaled. A good resource for information on standardizing data can be found [here](https://sebastianraschka.com/Articles/2014_about_feature_scaling.html#about-standardization).
+
 Data are frequently standardized by subtracting the mean of a vector from all data in that vector and dividing all values by the vector's standard deviation. This type of standardizing can be accomplished with base R's `scale` function. The data shown above are scaled by subtracting the mean from all values then dividing by *two* standard deviations. This can be done using EcoCountHelper's `scale2` function. By dividing all data in a vector by two standard deviations of that vector, parameter estimates for all standardized variables are directly comparable to those of categorical (factor) variables with two levels [@gelman_scaling_2008]. In the data used in this example, "Year" has two levels (2016 and 2017). By standardizing all numeric predictors by subtracting the mean for each vector and dividing by two standard deviations, we are able to directly compare the magnitude and surrounding confidence of the parameter estimates for all continuous variables in our models as well as the binary categorical variable "Year". All numeric variables have already been standardized using `scale2` in the previously loaded data, but an example of how we calculated the standardized "MoonScale" vector using the "MoonPct" and `scale2` function is shown below.
-  
+
 ```{r scale2, eval=FALSE}
 # data.frame syntax
 BatDataWide$MoonScale <- scale2(BatDataWide$MoonPct)
@@ -80,7 +86,660 @@ BatDataWide$MoonScale <- scale2(BatDataWide$MoonPct)
 # data.table syntax
 BatDataWide[,MoonScale := scale2(MoonPct)]
 ```
+
+Once you've identified variables that may influence your response variable, all predictor and response variable data are prepared appropriately in either long- or wide-form and all vectors are formatted appropriately, you are ready to begin building your GLMMs.
   
+### Modeling with glmmTMB
+  
+#### Conditional Models
 
+`glmmTMB` uses [Wilkinson notation](https://www.mathworks.com/help/stats/wilkinson-notation.html) for specifying formulas which follows the description outlined at the beginning of the [section above](#DataStr). We'll use both data formats shown above (long- and wide-form) to demonstrate the model building process. First, we'll decide on a base conditional model formula to be used for all groups in the analysis. In this example, a group is a bat species, and we will be using the same conditional model parameterization for each group in the analysis. Our literature review and knowledge of our study system suggested that our models should include a metric of artificial roost habitat availability (StrScale), metrics of artificial light presence and characteristics (BrightScale and CoolScale), ordinal date (YdayScale), elevation (ElevScale), distance to the nearest water source (WaterScale), metrics of developed and forested land presence surrounding monitoring sites (DevelScale and ForestScale), and lunar illumination (MoonScale) as fixed-effect predictors of species-specific bat activity levels. Because we gathered repeated measures of bat activity from multiple sites and across multiple years, we also included site as a random effect (specified as (1\|Site)) and year as a fixed effect. If possible, year should be included as a random intercept, but with only two levels of a year variable, we opted not to include year as a random intercept term [@gelman_data_2006]. Below is the base conditional model we used for all species in this example, with "SpCount" representing the response vector (call-sequences recorded per night) for a given bat species in the example data:
 
+```{r BaseCondMod, eval=FALSE}
+SpCount ~  StrScale + CoolScale + BrightScale + Year + YdayScale + ElevScale +
+                     WaterScale + DevelScale + ForestScale + MoonScale + (1|Site)
+```
+
+#### Error Distributions and Link Functions
+
+The data fitting process for GLMMs uses iteratively reweighted least squares (IRLS) to calculate maximum likelihood estimates for model covariates. Put more simply, GLMMs implement IRLS to produce the coefficients associated with each predictor specified in the conditional model. The IRLS process, and consequently the specification of models using `glmmTMB`, requires users to specify a mean-variance relationship (error distribution) for the response variable in order to calculate the weights of individual residuals in estimate calculations. Specifying the correct error distribution is important because different error distributions will produce different residual values, and thus different residual weights, and ultimately different parameter estimates.
+
+While choosing the correct error distribution for your models may seem intimidating, it can actually be a relatively straightforward process. While more computationally intensive than other similar methods, we suggest generating models implementing multiple plausible error distributions, then corroborating qualitative assessments of mean-variance plots with AIC values to determine which error-distribution family should be used for the final stages of analysis. For count data (non-negative integers), three plausible (and commonly used) error distributions are Poisson (`poisson()` from the `stats` package), negative-binomial with a linear parameterization (`nbinom1()` from the `glmmTMB` package), and negative-binomial with a quadratic parameterization (`nbinom2()` from the `glmmTMB` package). We suggest that users create a model for each combination of group (in this case species) and the error-distributions listed above when preparing models for use with `EcoCountHelper`. Using the conditional model shown above, and using the "family" argument of the `glmmTMB` function to specify error-distributions, the set of models for a species of bat may look like the code below:
+
+```{r families, eval=FALSE}
+# Poisson
+glmmTMB(SpCount ~  StrScale + CoolScale + BrightScale + Year + YdayScale + ElevScale +
+                     WaterScale + DevelScale + ForestScale + MoonScale + (1|Site),
+        family = poisson(link = "log"))
+
+# Negative-binomial with linear parameterization
+glmmTMB(SpCount ~  StrScale + CoolScale + BrightScale + Year + YdayScale + ElevScale +
+                     WaterScale + DevelScale + ForestScale + MoonScale + (1|Site),
+        family = nbinom1(link = "log"))
+
+# Negative-binomial with quadratic parameterization
+glmmTMB(SpCount ~  StrScale + CoolScale + BrightScale + Year + YdayScale + ElevScale +
+                     WaterScale + DevelScale + ForestScale + MoonScale + (1|Site),
+        family = nbinom2(link = "log"))
+```
+
+Notice that the link argument in each error-distribution function is "log". A link in this context is a function specifying the transformation of the response variable's *mean* so that a linear relationship between the expected values of the response variable and the predictors can be established. Because the link function maintains the probability distribution of a response variable by transforming its mean (expected value) given a particular condition (set of predictor values), a properly specified link function allows for the preservation of both the process that generated the data and a linear relationship between predictors and the transformed response. The natural logarithm link specified above is appropriate for count data because log-link function is only compatible with non-negative numbers (e.g., count data), and it puts the transformed mean of responses on a continuous scale which allows for linear modeling of the data. Unless you have a compelling reason to do so and are very familiar with GLMMs, we suggest leaving all link functions for the error-distributions listed above as "log".
+
+#### Zero-inflated Models {#ZIP}
+
+The error distribution family specification described above provides a mean-variance relationship for GLMM estimate calculations, but occasionally count data exhibit overdispersion due to there being more data points with a value of zero than the specified conditional model and error distribution may expect. Conceptually, this may be caused by separate processes generating zero and non-zero values. Consider the example data: perhaps early in our sampling periods there are an excess of zero counts because bats have not yet migrated back to their summer ranges, and perhaps some sites simply aren't suitable for a given bat species to inhabit them for reasoons unparameterized by our conditional model. There may be an excess of zeros early in our sampling periods or at certain sites, but when there is detectable bat activity it can be described by a Poisson or negative-binomial distribution. If your data contains a high number of zeros, and consequently your data exhibits overdispersion relative to Poisson or negative-binomial distributions, it is advantageous to specify a zero-inflated model *in addition to* your conditional model. It is important to understand that a zero-inflated model is not a different type of model than your standard GLMM, but rather an addendum to your specified error-distribution that allows it to expect a high number of zeros given certain conditions (associated with a separate zero-generating process) as well as a distribution of non-zero values according to the "family" argument specification.
+
+While checking for zero-inflation after identifying an appropriate error distribution is possible, it can be unnecessarily time consuming and manually intensive. Instead, we recommend creating two models for each error distribution specified in the previous step and assessing goodness of fit for all error distributions as well as zero-inflated models simultaneously. The final set of candidate models for a group (in this case, bat species), assuming excess zeros are generated by a process involving ordinal date and sampling site, will look like the code below:
+
+```{r AllMods, eval = FALSE}
+# Non-zero-inflated
+glmmTMB(SpCount ~  StrScale + CoolScale + BrightScale + Year + YdayScale + ElevScale +
+                     WaterScale + DevelScale + ForestScale + MoonScale + (1|Site),
+        family = poisson(link = "log"))
+
+glmmTMB(SpCount ~  StrScale + CoolScale + BrightScale + Year + YdayScale + ElevScale +
+                     WaterScale + DevelScale + ForestScale + MoonScale + (1|Site),
+        family = nbinom1(link = "log"))
+
+glmmTMB(SpCount ~  StrScale + CoolScale + BrightScale + Year + YdayScale + ElevScale +
+                     WaterScale + DevelScale + ForestScale + MoonScale + (1|Site),
+        family = nbinom2(link = "log"))
+
+# Zero-inflated
+glmmTMB(SpCount ~  StrScale + CoolScale + BrightScale + Year + YdayScale + ElevScale +
+                     WaterScale + DevelScale + ForestScale + MoonScale + (1|Site),
+        family = poisson(link = "log"), ziformula = ~YdayScale + Site)
+
+glmmTMB(SpCount ~  StrScale + CoolScale + BrightScale + Year + YdayScale + ElevScale +
+                     WaterScale + DevelScale + ForestScale + MoonScale + (1|Site),
+        family = nbinom1(link = "log"), ziformula = ~YdayScale + Site)
+
+glmmTMB(SpCount ~  StrScale + CoolScale + BrightScale + Year + YdayScale + ElevScale +
+                     WaterScale + DevelScale + ForestScale + MoonScale + (1|Site),
+        family = nbinom2(link = "log"), ziformula = ~YdayScale + Site)
+```
+
+#### Writing Functions for Modeling Multiple Groups
+
+In total, we advise generating six models for each response group included in the analysis. Depending on the number of response groups you plan to include in your analysis, writing the code for each model individually can become a cumbersome task. In this example, we have seven species included in our analysis for a total of 42 models to generate. Additionally, when running code for each model individually, keeping track of which models converge is tedious. Rather than writing the code for each model and supervising the modeling process, we often write functions that iteratively run the six models described above (three common error distributions for count data - Poisson, negative-binomial with a linear parameterization, and negative-binomial with a quadratic parameterization - each run both with and without a zero-inflated formula) for each response group, dynamically name each model generated, and classify models as having converged or not. Below is the code necessary to iteratively generate six models for each of the seven bat species we are examining the activity of in this example.
+
+```{r WideModFunctionFull}
+SpeciesList <- c("Epfu", "Laci", "Lano", "Myev", "Mylu", "Myvo", "Myyu")
+
+WideDataModeler <- function(Data, Species){
+  BatData <- get(deparse(substitute(Data)))
+  
+  SpNb1 <- tryCatch({glmmTMB(BatData[[Species]] ~ StrScale + CoolScale + BrightScale + Year +
+                               YdayScale + ElevScale + WaterScale + DevelScale + ForestScale +
+                               MoonScale + (1|Site),
+                   data = BatData, family = nbinom1(link = "log"))},
+                   error = function(cond){return(NA)},
+                   warning = function(cond){return(NA)})
+  
+  assign(paste0(Species, "_Nb1"), SpNb1, pos = .GlobalEnv)
+  
+  SpNb2 <- tryCatch({glmmTMB(BatData[[Species]] ~ StrScale + CoolScale + BrightScale + Year +
+                               YdayScale + ElevScale + WaterScale + DevelScale + ForestScale +
+                               MoonScale + (1|Site),
+                   data = BatData, family = nbinom2(link = "log"))},
+                   error = function(cond){return(NA)},
+                   warning = function(cond){return(NA)})
+  
+  assign(paste0(Species, "_Nb2"), SpNb2, pos = .GlobalEnv)
+  
+  SpPoi <- tryCatch({glmmTMB(BatData[[Species]] ~ StrScale + CoolScale + BrightScale + Year +
+                               YdayScale + ElevScale + WaterScale + DevelScale + ForestScale +
+                               MoonScale + (1|Site),
+                   data = BatData, family = poisson(link = "log"))},
+                   error = function(cond){return(NA)},
+                   warning = function(cond){return(NA)})
+  
+  assign(paste0(Species, "_Poi"), SpPoi, pos = .GlobalEnv)
+  
+  SpZiNb1 <- tryCatch({glmmTMB(BatData[[Species]] ~ StrScale + CoolScale + BrightScale + Year +
+                               YdayScale + ElevScale + WaterScale + DevelScale + ForestScale +
+                               MoonScale + (1|Site),
+                   data = BatData, family = nbinom1(link = "log"), ziformula = ~YdayScale + Site)},
+                   error = function(cond){return(NA)},
+                   warning = function(cond){return(NA)})
+  
+  assign(paste0(Species, "_ZiNb1"), SpZiNb1, pos = .GlobalEnv)
+
+  SpZiNb2 <- tryCatch({glmmTMB(BatData[[Species]] ~ StrScale + CoolScale + BrightScale + Year +
+                               YdayScale + ElevScale + WaterScale + DevelScale + ForestScale +
+                               MoonScale + (1|Site),
+                     data = BatData, family = nbinom2(link = "log"), ziformula = ~YdayScale + Site)},
+                     error = function(cond){return(NA)},
+                     warning = function(cond){return(NA)})
+  
+  assign(paste0(Species, "_ZiNb2"), SpZiNb2, pos = .GlobalEnv)
+  
+  SpZiPoi <- tryCatch({glmmTMB(BatData[[Species]] ~ StrScale + CoolScale + BrightScale + Year +
+                               YdayScale + ElevScale + WaterScale + DevelScale + ForestScale +
+                               MoonScale + (1|Site),
+                     data = BatData, family = poisson(link = "log"), ziformula = ~YdayScale + Site)},
+                     error = function(cond){return(NA)},
+                     warning = function(cond){return(NA)})
+  
+  assign(paste0(Species, "_ZiPoi"), SpZiPoi, pos = .GlobalEnv)
+}
+```
+
+Some of the functions (including the `function()` function) may be unfamiliar to you, so we'll break down the code above. The first line, `SpeciesList <- c("Epfu", "Laci", "Lano", "Myev", "Mylu", "Myvo", "Myyu")` specifies the response vectors that we will be generating models for. Each of these response vectors contains count data describing the number of call sequences recorded for the bat species specified by the four letter code comprising the vector name.
+
+To explain the user-defined function, we will build from the most basic components toward the end product.
+
+```{r WideModBase, eval=FALSE}
+SpeciesList <- c("Epfu", "Laci", "Lano", "Myev", "Mylu", "Myvo", "Myyu")
+
+WideDataModeler <- function(Data, Species){
+  
+}
+```
+
+In the code chunk directly above we are creating a function that will be assigned to the global environment as "WideDataModeler" that will have two arguments: Data and Species. Anything in the curly brackets in the following code chunks will be executed when the function is called.
+
+```{r WideModOneMod, eval=FALSE}
+SpeciesList <- c("Epfu", "Laci", "Lano", "Myev", "Mylu", "Myvo", "Myyu")
+
+WideDataModeler <- function(Data, Species){
+  BatData <- get(deparse(substitute(Data)))
+  
+    SpNb1 <- glmmTMB(BatData[[Species]] ~ StrScale + CoolScale + BrightScale + Year +
+                               YdayScale + ElevScale + WaterScale + DevelScale + ForestScale +
+                               MoonScale + (1|Site),
+                   data = BatData, family = nbinom1(link = "log"))
+    
+    SpNb2 <- glmmTMB(BatData[[Species]] ~ StrScale + CoolScale + BrightScale + Year +
+                               YdayScale + ElevScale + WaterScale + DevelScale + ForestScale +
+                               MoonScale + (1|Site),
+                   data = BatData, family = nbinom2(link = "log"))
+  
+  SpPoi <- glmmTMB(BatData[[Species]] ~ StrScale + CoolScale + BrightScale + Year +
+                               YdayScale + ElevScale + WaterScale + DevelScale + ForestScale +
+                               MoonScale + (1|Site),
+                   data = BatData, family = poisson(link = "log"))
+  
+  SpZiNb1 <- glmmTMB(BatData[[Species]] ~ StrScale + CoolScale + BrightScale + Year +
+                               YdayScale + ElevScale + WaterScale + DevelScale + ForestScale +
+                               MoonScale + (1|Site),
+                   data = BatData, family = nbinom1(link = "log"), ziformula = ~YdayScale + Site)
+
+  SpZiNb2 <- glmmTMB(BatData[[Species]] ~ StrScale + CoolScale + BrightScale + Year +
+                               YdayScale + ElevScale + WaterScale + DevelScale + ForestScale +
+                               MoonScale + (1|Site),
+                     data = BatData, family = nbinom2(link = "log"), ziformula = ~YdayScale + Site)
+
+  SpZiPoi <- glmmTMB(BatData[[Species]] ~ StrScale + CoolScale + BrightScale + Year +
+                               YdayScale + ElevScale + WaterScale + DevelScale + ForestScale +
+                               MoonScale + (1|Site),
+                     data = BatData, family = poisson(link = "log"), ziformula = ~YdayScale + Site)
+}
+```
+
+Immediately above we've added a line to read in the data that will be specified in the "Data" argument as well as calls to create glmmTMB objects for each of the six models we discussed in the [zero-inflation](#ZIP) section. Notice that the specified response variable in all models is "BatData[[Species]]". When we use this function to iteratively model count data for our response groups listed in the "SpeciesList" object, using "BatData[[Species]]" as the response variable will allow our function to dynamically call the vectors named with the character strings listed in the "SpeciesList" object. Also note that each model is assigned with a name that describes the error distribution used in the model, and the presence of a zero-inflated formula if applicable (denoted by the "Zi" preceeding the error distribution abbreviations in the last three models). Any objects created within the function do not leave the function's environment (i.e., function-created objects do not enter the global environment) without an explicit call to do so (as is shown immediately below), and any function-generated objects are removed from the function's environment upon completion of the function's execution.
+
+```{r WideModAssign, eval=FALSE}
+SpeciesList <- c("Epfu", "Laci", "Lano", "Myev", "Mylu", "Myvo", "Myyu")
+
+WideDataModeler <- function(Data, Species){
+  BatData <- get(deparse(substitute(Data)))
+  
+  SpNb1 <- glmmTMB(BatData[[Species]] ~ StrScale + CoolScale + BrightScale + Year +
+                               YdayScale + ElevScale + WaterScale + DevelScale + ForestScale +
+                               MoonScale + (1|Site),
+                   data = BatData, family = nbinom1(link = "log"))
+  
+  assign(paste0(Species, "_Nb1"), SpNb1, pos = .GlobalEnv)
+  
+  SpNb2 <- glmmTMB(BatData[[Species]] ~ StrScale + CoolScale + BrightScale + Year +
+                               YdayScale + ElevScale + WaterScale + DevelScale + ForestScale +
+                               MoonScale + (1|Site),
+                   data = BatData, family = nbinom2(link = "log"))
+  
+  assign(paste0(Species, "_Nb2"), SpNb2, pos = .GlobalEnv)
+  
+  SpPoi <- glmmTMB(BatData[[Species]] ~ StrScale + CoolScale + BrightScale + Year +
+                               YdayScale + ElevScale + WaterScale + DevelScale + ForestScale +
+                               MoonScale + (1|Site),
+                   data = BatData, family = poisson(link = "log"))
+  
+  assign(paste0(Species, "_Poi"), SpPoi, pos = .GlobalEnv)
+  
+  SpZiNb1 <- glmmTMB(BatData[[Species]] ~ StrScale + CoolScale + BrightScale + Year +
+                               YdayScale + ElevScale + WaterScale + DevelScale + ForestScale +
+                               MoonScale + (1|Site),
+                   data = BatData, family = nbinom1(link = "log"), ziformula = ~YdayScale + Site)
+  
+  assign(paste0(Species, "_ZiNb1"), SpZiNb1, pos = .GlobalEnv)
+
+  SpZiNb2 <- glmmTMB(BatData[[Species]] ~ StrScale + CoolScale + BrightScale + Year +
+                               YdayScale + ElevScale + WaterScale + DevelScale + ForestScale +
+                               MoonScale + (1|Site),
+                     data = BatData, family = nbinom2(link = "log"), ziformula = ~YdayScale + Site)
+  
+  assign(paste0(Species, "_ZiNb2"), SpZiNb2, pos = .GlobalEnv)
+  
+  SpZiPoi <- glmmTMB(BatData[[Species]] ~ StrScale + CoolScale + BrightScale + Year +
+                               YdayScale + ElevScale + WaterScale + DevelScale + ForestScale +
+                               MoonScale + (1|Site),
+                     data = BatData, family = poisson(link = "log"), ziformula = ~YdayScale + Site)
+  
+  assign(paste0(Species, "_ZiPoi"), SpZiPoi, pos = .GlobalEnv)
+```
+
+The `assign()` calls above dynamically name the models that were assigned to the function's environment through use of the `paste0()` function, and assign them to the global environment so they will persist beyond the execution of the function. Developing an object naming protocol to use throughout the workflow we will be using throughout this example is imperative. Giving objects descriptive names with a consistent structure not only provides information regarding the object, but also allows one to retrieve that object from the global environment using [regular expressions](https://www.rstudio.com/wp-content/uploads/2016/09/RegExCheatsheet.pdf). Multiple `EcoCountHelper` functions use regular expressions to retrieve objects from the global environment with minimal user input, so using names with patterns that are recognizable to regular expressions is integral to the use of this package. Perhaps the easiest means of denoting response group membership in an object name with regular-expression-friendly structuring is to begin a name with the group membership code (in this case, the four letter bat species code) followed by an underscore, then a description of the nature of the object. The model names generated by the `assign()` calls above demonstrate this naming scheme.
+
+The final step to completing the function initially outlined is to add the `tryCatch()` calls.
+
+```{r WideModFinFun, eval=FALSE}
+SpeciesList <- c("Epfu", "Laci", "Lano", "Myev", "Mylu", "Myvo", "Myyu")
+
+WideDataModeler <- function(Data, Species){
+  BatData <- get(deparse(substitute(Data)))
+  
+  SpNb1 <- tryCatch({glmmTMB(BatData[[Species]] ~ StrScale + CoolScale + BrightScale + Year +
+                               YdayScale + ElevScale + WaterScale + DevelScale + ForestScale +
+                               MoonScale + (1|Site),
+                   data = BatData, family = nbinom1(link = "log"))},
+                   error = function(cond){return(NA)},
+                   warning = function(cond){return(NA)})
+  
+  assign(paste0(Species, "_Nb1"), SpNb1, pos = .GlobalEnv)
+  
+  SpNb2 <- tryCatch({glmmTMB(BatData[[Species]] ~ StrScale + CoolScale + BrightScale + Year +
+                               YdayScale + ElevScale + WaterScale + DevelScale + ForestScale +
+                               MoonScale + (1|Site),
+                   data = BatData, family = nbinom2(link = "log"))},
+                   error = function(cond){return(NA)},
+                   warning = function(cond){return(NA)})
+  
+  assign(paste0(Species, "_Nb2"), SpNb2, pos = .GlobalEnv)
+  
+  SpPoi <- tryCatch({glmmTMB(BatData[[Species]] ~ StrScale + CoolScale + BrightScale + Year +
+                               YdayScale + ElevScale + WaterScale + DevelScale + ForestScale +
+                               MoonScale + (1|Site),
+                   data = BatData, family = poisson(link = "log"))},
+                   error = function(cond){return(NA)},
+                   warning = function(cond){return(NA)})
+  
+  assign(paste0(Species, "_Poi"), SpPoi, pos = .GlobalEnv)
+  
+  SpZiNb1 <- tryCatch({glmmTMB(BatData[[Species]] ~ StrScale + CoolScale + BrightScale + Year +
+                               YdayScale + ElevScale + WaterScale + DevelScale + ForestScale +
+                               MoonScale + (1|Site),
+                   data = BatData, family = nbinom1(link = "log"), ziformula = ~YdayScale + Site)},
+                   error = function(cond){return(NA)},
+                   warning = function(cond){return(NA)})
+  
+  assign(paste0(Species, "_ZiNb1"), SpZiNb1, pos = .GlobalEnv)
+
+  SpZiNb2 <- tryCatch({glmmTMB(BatData[[Species]] ~ StrScale + CoolScale + BrightScale + Year +
+                               YdayScale + ElevScale + WaterScale + DevelScale + ForestScale +
+                               MoonScale + (1|Site),
+                     data = BatData, family = nbinom2(link = "log"), ziformula = ~YdayScale + Site)},
+                     error = function(cond){return(NA)},
+                     warning = function(cond){return(NA)})
+  
+  assign(paste0(Species, "_ZiNb2"), SpZiNb2, pos = .GlobalEnv)
+  
+  SpZiPoi <- tryCatch({glmmTMB(BatData[[Species]] ~ StrScale + CoolScale + BrightScale + Year +
+                               YdayScale + ElevScale + WaterScale + DevelScale + ForestScale +
+                               MoonScale + (1|Site),
+                     data = BatData, family = poisson(link = "log"), ziformula = ~YdayScale + Site)},
+                     error = function(cond){return(NA)},
+                     warning = function(cond){return(NA)})
+  
+  assign(paste0(Species, "_ZiPoi"), SpZiPoi, pos = .GlobalEnv)
+}
+```
+
+The addition of the `tryCatch()` calls above force models that did not converge or exhibitted singular convergence (which causes an error or warning) to a value of NA rather than a glmmTMB class object. By allowing only models that did not have model convergence issues to maintain their glmmTMB class, we can use the `Filter()` function later to list the names of all viable models in the global environment for further analysis.
+
+Running the code in the last code chunk will assign the function we assigned in the global environment as "WideDataModeler". With our modeling function defined and our data prepared, we can finally use `lapply()` to iteratively generate the six models defined in our function for each of the response groups we are examining.
+
+```{r ModelCall, eval=FALSE}
+lapply(SpeciesList, WideDataModeler, Data = BatDataWide)
+```
+
+```{r ModLoad, include=FALSE, eval=TRUE}
+AllDat <- data(package = "EcoCountHelper")
+Items <- as.data.table(AllDat$results)
+
+WideModels <- regmatches(Items$Item, regexpr("^[[:alpha:]]{4}_.{3,5}$", Items$Item))
+
+data(list = WideModels)
+```
+
+## Identifying Best Fit Models
+
+After defining a function to generate multiple models for a given bat species and using `lapply()` to iteratively generate those models for each of our response groups, we can now begin identifying the model that best fits the data for each species. There are two methods that we use to identify best-fitting models for each response group: AIC value comparison and mean-variance plot examination. The order that these steps are performed in does not matter, as information from both methods will be corroborated to identify the best-fitting model for each species.
+
+In this example we'll begin with mean-variance plots. These plots are not particularly difficult to construct manually, however we have built a set of functions (the "DistFit" family of functions) that facilitate the process. For wide data, the function for this process is `DistFitWide()`. These functions aggregate data by one or more factor variables (in the case of this example, we'll use the "Year" and "Site" vectors to aggregate data) for each response group that is supplied in the character vector provided to the "GroupList" argument. "GroupList" values must specify the response vectors as named in the data provided to the "Data" argument.
+
+```{r DistFitWide, include=FALSE, fig.width=6, fig.height=4, fig.align='center'}
+DistFitWide(Splitters = c("Year", "Site"), Data = BatDataWide,
+            GroupList = SpeciesList)
+```
+
+```{r DistFitWidePseudo, eval=FALSE, fig.width=6, fig.height=4, fig.align='center'}
+DistFitWide(Splitters = c("Year", "Site"), Data = BatDataWide,
+            GroupList = SpeciesList)
+```
+
+Rather than showing the plot for each response group under investigation (seven in total), we will only show the plot for *Eptesicus fuscus* for the time being. Because each plot produced is named using the response group name ("Epfu" in the case of *E. fuscus*) followed by "DistPlot", we can use the code below to call the *E. fuscus* mean-variance plot.
+
+```{r DistFitPlot, fig.width=6, fig.height=4, fig.align='center'}
+EpfuDistPlot
+```
+
+The points plotted in this graph show individual mean and variance data for each site-year combination, and the lines running through the data show the different error distributions discussed above. By examining each plot and how well each error distribution fits the mean-variance relationship exhibited by the points, we can ascertain the best error distribution to use for each response group.
+
+`EcoCountHelper` also has a function that produces tabulated AIC values for each response group, as well as a table showing the best fitting model (as defined by AIC) for each response group. Users specify the names of the response groups under investigation (which should also be in the model names as mentioned above) using the "Groups" argument, and the desired name of the table listing the top model for each response group using the "TopModOut" argument.
+
+```{r ModelCompare, cache=TRUE}
+ModelCompare(Groups = SpeciesList, TopModOutName = BestFitModels)
+```
+
+The `ModelCompare()` function names each species' AIC table starting with the response group name followed by "AIC", so to call the AIC table for *E. fuscus*, we would use the first line of the code below. We can also call the table containing the top model for each response group under investigation using the name provided to the "TopModOut" argument in the `ModelCompare()` call made above (in this case, the table is named "BestFitModels").
+
+```{r Aic}
+EpfuAIC
+
+BestFitModels
+```
+
+With both a mean-variance plot and AIC values for each response variable in our analysis, we can now corroborate each of these to arrive at the best error-distribution to use for each response group, as well as whether or not we should use a zero-inflated model for each response group. In the case of mean-variance plots and AIC values suggesting different error distributions, we suggest using the mean-variance plot to inform your decision. Additionally, because the mean-variance plots do not speak to the presence of zero-inflation, we use solely the AIC values for each response group to determine whether to use a zero-inflated model for each response group.
+
+If the "top model table" generated by the `ModelCompare()` function does not accurately reflect the models you have concluded best fit your data, you can easily modify individual values. For instance, if we concluded that using a negative-binomial error distribution with a linear parameterization best fit the *E. fuscus* data, we could use the line of code below to reflect that decision in our table of top models.
+
+```{r TopModChange, eval=FALSE}
+BestFitModels[BestFitModels$Subj == "Epfu"][["TopModel"]] <- "Epfu_Nb1" #data.frame syntax
+
+BestFitModels[Subj == "Epfu", TopModel := "Epfu_Nb1"] #data.table syntax
+```
+
+### Saving and Loading Models
+
+Because running models can take a substantial amount of time, it's worth saving at least the models that you will use for the remainder of your analysis. Models can be saved and named dynamically with a simple loop like the one below:
+
+```{r SaveMods, eval=FALSE}
+SaveDir <- "Z:/Models" # Specifying a pre-existing directory to save to
+
+for(i in unique(BestFitModels$TopModel)){ # Iterates through the models in the "BestFitModels" table
+  saveRDS(get(i, pos = .GlobalEnv), file = paste0(SaveDir, "/", i, ".rds")) # Saves the model with the name it has in your global environment as the file name
+}
+```
+  
+We could also save all glmmTMB-class objects in the environment to .rds files using the code below:  
+```{r SaveAll, eval=FALSE}
+SaveDir <- "Z:/Models" # Specifying a pre-existing directory to save to
+
+# Creates a character vector of object names with class "glmmTMB"
+Mods <- Filter(function(x) inherits(get(x), "glmmTMB"), ls(pos = .GlobalEnv))
+
+# Iteratively saves models to .rds files in the directory specified above
+for(i in Mods){
+  tmp <- get(i)
+  saveRDS(tmp, file = paste0(SaveDir, "/", i, ".rds"))
+}
+```
+  
+If you close your R session and would like to reload all of the models you have saved to a directory, you can use the code below after specifying the directory you saved .rds files to in the first line of the chunk:
+```{r LoadMods}
+LoadDir <- "Z:/Models" # Specifying a pre-existing directory to load from
+
+for(i in list.files(LoadDir, full.names = T, pattern = "\\.rds")){
+  TmpMod <- readRDS(i)
+  assign(regmatches(basename(i), regexpr("^[[:alnum:]]+_[[:alnum:]]+",
+                                         basename(i))), TmpMod)
+}
+```
+  
+## Checking Goodness-of-Fit
+  
+While the models we chose as the best fits for the data in the step above were, in fact, the best of the choices provided, they still may not be adequate to use for inference due to poor overall fit. `DHARMa` is a package that allows users to run diagnostic tests and create diagnostic plots for the simulated residuals of models. `EcoCountHelper` contains the "ResidPlot" family of functions which creates useful diagnostic plots to assess goodness-of-fit. For wide data, we can use the `ResidPlotWide()` function as is shown below. The "Data" argument allows users to specify the data frame or data table from which the models were generated, and the "ModNames" argument allows users to specify a vector of models to be examined. The output will be three plots for each model provided to the "ModNames" argument that will be saved as a single object in the global environment named with the model name followed by "SimResidPlot".
+
+```{r ResidPlots, include=FALSE}
+ResidPlotWide(Data = BatDataWide, ModNames = BestFitModels$TopModel)
+```
+
+```{r ResidPlotsPseudo, eval=FALSE}
+ResidPlotWide(Data = BatDataWide, ModNames = BestFitModels$TopModel)
+```
+
+To call the *E. fuscus* residual diagnostic plots, we can use the code below:
+
+```{r EpfuResidPlot, fig.width=7, fig.height=4.6666666666, fig.align='center'}
+Epfu_Nb2SimResidPlot
+```
+
+Without providing too much detail, the QQ-plot (the furthest left plot) should show a line of points that are relatively straight, and that fall close to the red line running diagonally across the plot. The dispersion plot (second from left) should show a histogram with a peak close to the vertical red line shown in the plot. The residual outlier distribution (third from left) should show a relatively flat histogram with few or no bars filled with red. The histogram of residual outliers resulting from bootstrapped residual simulations (furthest right) should have the expected outlier frequency (black vertical line) near the actual outlier frequency (red vertical line). For more information on what these plots mean, please see [this DHARMa vignette](https://cran.r-project.org/web/packages/DHARMa/vignettes/DHARMa.html). Additionally, it is important to note that, because these plots are based on simulations, no two function calls will result in identical plots, although the results should be very similar and lead to the same conclusion regarding goodness-of-fit.
+  
+## Plotting Effects
+  
+We've built our candidate models, chosen the ones that best fit the data, and assessed goodness-of-fit. We can now assume the results of our models are valid, and proceed with the model interpretation process. `EcoCountHelper` has multiple functions for model interpretation. One of the first steps in the data interpretation process is to examine the relative importance of predictors. This step of the process can be accomplished with the `EffectsPlotter()` function which plots the parameter estimates for each predictor along with specified confidence intervals surrounding those estimates. Much the same as other functions in this package, we supply a list of models to the "TopMods" argument to specify which models should be used to create effects plots. We also need to specify the labels for each estimate plotted. This can be done in the same order as the labels produced by `row.names(summary(x)$coeff$cond)`, where x is the name of a model. While it may produce non-intuitive labels for people unfamiliar with the analysis, we can also supply `row.names(summary(x)$coeff$cond)` to the "ParamLabs" argument. The function defaults to displaying 80% and 90% confidence intervals.
+
+```{r EffectsPlots, include=FALSE}
+EffectsPlotter(TopMods = BestFitModels$TopModel,
+               ParamLabs = rownames(summary(Epfu_Nb2)$coeff$cond))
+```
+
+```{r EffectsPlotsPseudo, eval=FALSE}
+EffectsPlotter(TopMods = BestFitModels$TopModel,
+               ParamLabs = rownames(summary(Epfu_Nb2)$coeff$cond))
+```
+
+All of the plots generated by the model call above named plots by appending "EffectsPlot" to the end of each model name supplied to the "TopMods" argument. We can view the effects plot for *E. fuscus* using the line of code below.
+
+```{r EpfuEffectsPlot, fig.width=6, fig.height=6, fig.align='center'}
+Epfu_Nb2EffectsPlot
+```
+
+This plot can be easier to interpret with more descriptive labels for each predictor. We can change the parameter labels by supplying a character vector of labels to the "ParamLabs" argument, with the labels in the same order that the predictors are returned by `row.names(summary(x)$coeff$cond)`.
+
+```{r EffectsPlotsLabs, include=FALSE}
+EffectsPlotter(TopMods = BestFitModels$TopModel,
+               ParamLabs = c("Intercept (Site)", "Structure Index",
+                             "Prop. Cool", "Brightness Index", "Year (16-17)",
+                             "Ordinal Date", "Elevation", "Dist. to Water", 
+                             "Prop. Developed", "Prop. Forest", "Moon Illum."))
+```
+
+```{r EffectsPlotsLabsPseudo, eval=FALSE}
+EffectsPlotter(TopMods = BestFitModels$TopModel,
+               ParamLabs = c("Intercept (Site)", "Structure Index",
+                             "Prop. Cool", "Brightness Index", "Year (16-17)",
+                             "Ordinal Date", "Elevation", "Dist. to Water", 
+                             "Prop. Developed", "Prop. Forest", "Moon Illum."))
+```
+
+```{r EpfuEffectsPlotLabs, fig.width=6, fig.height=6, fig.align='center'}
+Epfu_Nb2EffectsPlot
+```
+
+In this plot, we can see that there appears to be a strong and positive relationship between *E. fuscus* activity and ordinal date, year, and our structure index. Because we built these models with standardized numeric data, however, we cannot directly interpret the "real world" effect sizes of any of these parameters from the effects plots. For models with log links, in order to assess the factor by which a given change in a predictor changes the predicted response variable value, we must exponentiate Euler's number by the coefficient of interest, then exponentiate that number by a specified unit of change. While not particularly complicated, carrying these calculations out manually can be arduous. To relieve users of some of the programmatic burden associated with transforming model coefficients into meaningful metrics of change, the `EcoCountHelper` package has a "RealEffects" family of functions that calculate the factor and percent by which a response variable changes for a given change in one or more predictor variables.
+  
+## Examining "Real-World" Effects
+### Single Model and Predictor
+  
+To determine the predicted effect of a specified change in a single predictor on a response variable, we can use the `RealEffectsText()` function, which calculates the predicted change in a response variable as a percentage or a factor (depending on the magnitude of change). To use this function with an unscaled predictor, we must specify the model we would like to use for predicting the impact of a change in a predictor using the "Model" argument, the predictor of interest using the "Predictor" argument, and the unstandardized quantity that the predictor should be changed by. For standardized predictors, we also must include how many deviations the data were divided by during the standardizing process using the "ScaleSds" argument, and the vector of unstandardized data from which the standardized was calculated using the "PredVect" argument. The code chunk below predicts the change in nightly *E. fuscus* call sequences for a 20% increase in forest cover at the monitoring site. Note that we supply a "ScaleSds" value of 2 because we used `scale2()` to standardize the raw ManualForestPct vector.
+
+```{r RealEffectsText}
+RealEffectText(Model = Epfu_Nb2, Predictor = "ForestScale",
+               UnitChange = 0.2, ScaleSds = 2,
+               PredVect = BatDataWide$ManualForestPct)
+```
+
+Note that the confidence interval values default to 95% confidence intervals. You can specify alternative confidence interval values using the "ConfInt" argument. Also note that the specified change in the predictor should only be expressed as a proportion/percent value if the unstandardized data for that predictor were collected as a proportion/percent value. Had we used the standardized "WaterScale" and unstandardized "WaterDist" as the vectors for the predictor of interest, we would have supplied the "UnitChange" argument with a value in meters since the unstandardized "WaterDist" vector expresses values in meters.
+  
+### Multiple Models and Predictors
+  
+With models for seven bat species and nine numeric predictors for each model, using `RealEffectText()` 63 times to obtain predicted changes in each species' activity for a change in each predictor would be tedious, and would require the manual tabulation of results. To allow users to easily create a table with predicted changes in responses for multiple response groups and changes in multiple predictors, we created `RealEffectTabWide()` and `RealEffectTabLong()` which tabulate changes in response variables for all combinations derived from a vector of models and a vector of common predictors. The arguments for the "RealEffectTab" functions are nearly the same as those associated with `RealEffectText()`, but most arguments accept vectors rather than single values to calculate predicted response changes for multiple response groups with a single function call.
+  
+Because we are working with wide-form data in this example, we will use `RealEffectTabWide()`. Rather than specifying a single model, the "Models" argument accepts a character vector of models to be used for predicting response variable changes. As we did for all of the function calls above that required a vector of model names, we can use the vector of best fit models generated by our previous use of `ModelCompare()`. Use of the "Predictors" argument is identical in both `RealEffectText()` and `RealEffectTabWide()`, requiring a character vector listing predictors to change the value of for response change calculations. The "UnitChanges" argument accepts a numeric vector of values to change each predictor by in response variable change calculations. The vector supplied to the "UnitChanges" argument should be the same length as the "Predictors" vector, with one value of change for each predictor in the same order as predictors were listed in the "Predictors" vector. Similarly, if any of the predictors supplied to the "Predictors" argument are standardized, the "ScaleSds" must be specified as a numeric vector listing the number of standard deviations data were divided by during the standardization process. If predictors contain a mixture of standardized and unstandardized predictors, "ScaleSds" values associated with unstandardized predictors should be "NA". The use of the "PredVects" argument in `RealEffectTabWide()` is the same as the use of the "PredVect" argument in `RealEffectText()`, but rather than supplying a single unstandardized vector to associate with a standardized predictor, the "PredVects" argument accepts a character vector of unstandardized vector names. If the "Predictors" argument contains both standardized and unstandardized predictors, "PredVects" values should be approached in the same way as "ScaleSds" in that values associated with unstandardized predictors should be assigned a value of "NA". Finally, we need to provide the unquoted name of the data frame or data table to which all of the vectors names supplied above belong using the "Data" argument. To visualize all of the vectors supplied to the arguments above and ensure each predictor has the correct value change, standard deviations by which is was standardized and associated unstandardized vector, we can create a data frame or data table containing the vectors for all `RealEffectTabWide()` arguments.
+
+```{r RealEffectsTabArgs}
+RealEffectsArgs <- data.table(Predictors = c("MoonScale", "ForestScale", "DevelScale",
+                                          "WaterScale", "ElevScale", "YdayScale",
+                                          "BrightScale", "CoolScale", "StrScale"),
+                              UnitChanges = c(0.2,  0.2, 0.2, 250, 50, 30, 5, 0.2, 0.05),
+                              ScaleSds = rep(2, 9),
+                              PredVects = c("MoonPct", "ManualForestPct", "ManualDevelPct",
+                                "WaterDist", "Elev", "Yday", "BrightCount", "PropCool",
+                                "StrWeight"))
+
+RealEffectsArgs
+```
+  
+We can now use the vectors we created above as argument values in the proceeding `RealEffectTabWide()` call.
+  
+```{r RealEffectTab}
+RealEffectsTabExample <- RealEffectTabWide(Models = BestFitModels$TopMod,
+                                           Predictors = RealEffectsArgs$Predictors,
+                                           UnitChanges = RealEffectsArgs$UnitChanges,
+                                           ScaleSds = RealEffectsArgs$ScaleSds,
+                                           PredVects = RealEffectsArgs$PredVects,
+                                           Data = BatDataWide)
+
+RealEffectsTabExample
+```
+  
+In the table above, the vectors (from left to right) list the model, predictor, how much the predictor was changed, the percent by which the response is predicted to change for the given change in the predictor, the lower and upper confidence interval values for the predicted change in the response, and the p-value of the parameter estimate for the given model and predictor. The values in the table above are in long-form, which is convenient for indexing to view the results for all predictors within a single model or a single predictor across all models. We can try each of those indexing methods below.  
+
+```{r RealEffectsIndexing}
+# Viewing all predicted response changes for E. fuscus
+RealEffectsTabExample[Model == "Epfu_Nb2",]
+
+#Viewing all predicted response changes for a 20% increase in forest cover
+RealEffectsTabExample[Predictor == "ForestScale",]
+```
+  
+## Formatting "RealEffects" Tables
+  
+While viewing the output from `RealEffectTabWide()` calls in long-form can be convenient for quickly indexing values, wide-form results may be easier to integrate into a report in an easy-to-read and aesthetically pleasing way. The package `tidyr` should have been installed to your local library when `EcoCountHelper` was installed. We can use the `pivot_wider()` function from `tidyr` to make our results wide. We can also concatenate some of the vectors ("DeltaPct", "LowerConf" and "UpperConf") and create a vector of species to use for identifying response group membership instead of model names - both of which may make our table easier to read outside of R.  
+```{r RealEfTabWider}
+library(tidyr)
+
+# Creates vector of species names from first four characters of model name
+RealEffectsTabExample[,Species := substr(Model, 1, 4)] 
+
+# Concatenates response change, and upper and lower confidence intervals into a single
+# vector with symbols for added clarity
+RealEffectsTabExample[DeltaPct >= 0, PctConf := paste0("+", DeltaPct,
+                                        "% (", LowerConf,
+                                        "% / ", UpperConf, "%)")]
+
+RealEffectsTabExample[DeltaPct < 0, PctConf := paste0(DeltaPct,
+                                       "% (", LowerConf, "% / ",
+                                       UpperConf, "%)")]
+
+# Creates wide-form results table with species as columns
+RealEfWide <- as.data.table(pivot_wider(RealEffectsTabExample, id_cols = c(Predictor, UnitChange),
+                                        names_from = Species, values_from = PctConf))
+
+RealEfWide
+```
+  
+While we are quite familiar with what the predictor names represent at this point in the analysis, others may not be. Adding more descriptive labels to the table can be accomplished by adding a vector listing the more descriptive predictor names in the same order as the existing predictor names. After ensuring the short and long predictor names are properly aligned, we can assign the long names to the "Predictor" vector and delete the original vector of long names.
+  
+```{r LongPredNames}
+RealEfWide[,PredictorLong := c("Moon Illum. (%)", "Proportion Forested",
+                               "Proportion Developed", "Water Distance (m)",
+                               "Elevation (m)", "Ordinal Date (Days)",
+                               "Brightness Index", "Proportion Cool Lights",
+                               "Structure Index")]
+
+RealEfWide
+
+RealEfWide[,Predictor := PredictorLong]
+RealEfWide[,PredictorLong := NULL]
+
+RealEfWide
+```
+  
+We can take a similar approach to further increase the interpretability of the table by adding a vector that describes whether predictors are classified as anthropogenic or natural, and grouping predictors with a common classification in our results table. Just as we did above, we will need to detail the classification for each predictor in the same order that the predictors are listed.
+  
+```{r AnthNat}
+# Creates a vector of predictor classifications in the same order that the predictors are listed
+RealEfWide[,PredNature := c("Natural", "Natural", "Anthropogenic", "Natural",
+                            "Natural", "Natural", "Anthropogenic", "Anthropogenic",
+                            "Anthropogenic")]
+
+# Groups predictors with a common classification together in the results table
+setorder(RealEfWide, PredNature)
+
+RealEfWide
+```
+  
+Our table is coming along well, but the species are in reverse alphabetical order. If we want the species in alphabetical order, we will have to specify the column order manually using `setcolorder()`.
+
+```{r AlphaSp}
+setcolorder(x = RealEfWide, neworder = c("Predictor", "UnitChange",
+                                         "Epfu", "Laci", "Lano", 
+                                         "Myev", "Mylu", "Myvo",
+                                         "Myyu"))
+```
+
+  
+At this point we have a relatively readable results table, but it isn't aesthetically pleasing and we cannot use it in another document without exporting it as a delimited file and altering it in a spreadsheet program. Instead of taking that route, we can use the `kableExtra` package (installed with `EcoCountHelper`) to produce an image of the table that is attractive and portable.  
+
+To begin this process, we should change the names of any vectors that are cryptic. In this case, we should change the "UnitChange" vector name to something more descriptive and intuitive such as "Unit Increase".
+
+```{r UnitNameChange}
+setnames(RealEfWide, old = "UnitChange",
+         new = "Unit Increase",
+         skip_absent = T)
+```
+  
+The last step we need to take before creating a formatted table is to record the rows that fall under each predictor classification (anthropogenic or natural) and delete the "PredNature" vector. From the table above, we know that anthropogenic predictors occupy rows one through four, and natural predictors occupy rows five through nine. With that information recorded, we can remove the "PredNature" vector from the "RealEfWide" table.  
+
+```{r PredNatDelete}
+RealEfWide[,PredNature := NULL]
+```
+  
+Now we can generate a formatted table using `kableExtra` using the code below. The "%>%" operator is used for piping, which is the process of using the object generated by a line or chunk of code in the following line or chunk without having to permanently assign the intermediate object to the global environment.
+  
+```{r KableTable}
+library(kableExtra)
+
+# Creates table and center aligns all cell values
+RealEfKable <- kable(RealEfWide, align = "c") %>%
+  # Adds a grey stripe on every other line
+  row_spec(seq(2, nrow(RealEfWide), 2), background = "grey") %>%
+  # makes text color in all rows black
+  row_spec(1:nrow(RealEfWide), color = "black") %>%
+  # Adds "Anthropogenic" group indicator for rows 1 to 4
+  group_rows("Anthropogenic", 1, 4) %>%
+  # Adds "Natural" group indicator for rows 5 to 9
+  group_rows("Natural", 5, 9)
+
+RealEfKable
+```
+  
+The tables generated by `kableExtra` can be exported manually by using the "Export" GUI in the viewer window, or can be saved to a file using using the `save_kable()` function. For more information on formatting kableExtra tables, see this [kableExtra vignette](https://cran.r-project.org/web/packages/kableExtra/vignettes/awesome_table_in_html.html).
+  
+## Long-form Analysis  
+Analyzing long-form data with `EcoCountHelper` is a nearly identical process to analyzing wide-form data with `EcoCountHelper`. Most of the changes to the process involve the addition of one or two arguments in the long-form versions (ending with "Long" instead of "Wide") of certain functions. The two most common additional arguments in the long-form functions are "GroupCol" and "CountCol". Because long-form data does not have separate columns for count data belonging to each response group, there is a single column indicating response group membership (in this example, species) and another column indicating the count value. "GroupCol" and "CountCol" arguments require a character value specifying the name of the vector containing data specifying group membership and count value, respectively.  
+
+You will also encounter a logical "Looped" argument in the `ResidPlotLong()` function. If modeling long-form data with a single model for each response group (e.g., one GLMM with a Poisson error distribution and no zero-inflated model), you may loop through your data by using code akin to the code chunk below:  
+```{r LoopMods}
+for(i in unique(BatDataLong$Species)){
+  TmpData <- BatDataLong[Species == i,]
+  
+  SpPoi <- tryCatch({glmmTMB(Count ~ StrScale + CoolScale + BrightScale + Year +
+                               YdayScale + ElevScale + WaterScale + DevelScale + ForestScale +
+                               MoonScale + (1|Site),
+                   data = TmpData, family = poisson(link = "log"))},
+                   error = function(cond){return(NA)},
+                   warning = function(cond){return(NA)})
+  
+  assign(paste0(i, "_Poi"), SpPoi, pos = .GlobalEnv)
+}
+```
+  
+Because the "data" argument is supplied "TmpData" which is an ephemeral object, the residual simulation process that `ResidPlotLong()` borrows from the `DHARMa` package searches for "TmpData" but cannot find it, and thus returns an error. By supplying `TRUE` to the "Looped" argument, `ResidPlotLong()` assumes that the the "data" value in each model needs to be updated to point to the permanent data set indicated by `ResidPlotLong()`'s "Data" argument (in this case, "BatDataLong") rather than an ephemeral object.  
+  
+Finally, there is a "GroupPat" argument in `RealEffectTabLong()` that must be supplied a regular expression to identify the response group to which each model supplied to the "Models" argument belongs. The regular expression should be the same as the values supplied to the "GroupPat" argument in all other functions. If model names start with the response group abbreviation followed by an underscore as was suggested earlier in this document, the default value of "\^[[:alnum:]]+" will be sufficient.
+  
 ## References

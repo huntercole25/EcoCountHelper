@@ -3,7 +3,8 @@
 
 RealEffectTabLong <- function(Models, Predictors, UnitChanges, ConfInt = 95, Pvals = T, GroupCol, 
                               GroupPat = "^[[:alnum:]]+",
-                              ScaleSds = rep(NA, length(Predictors)), PredVects = ScaleSds, Data = NULL){
+                              ScaleSds = rep(NA, length(Predictors)), PredVects = ScaleSds,
+                              Data = NULL, Precision = 2){
   if("glmmTMB" %in% class(Models)){
     Models <- deparse(substitute(Models))
   }
@@ -24,7 +25,7 @@ RealEffectTabLong <- function(Models, Predictors, UnitChanges, ConfInt = 95, Pva
       
       if(Pvals == T){
         Pval <- data.table::as.data.table(
-          summary(TmpMod)$coeff$cond, keep.rownames=T)[rn == Predictor, `Pr(>|z|)`]
+          summary(TmpMod)$coeff$cond, keep.rownames=T)[rn == Predictor, round(`Pr(>|z|)`, Precision)]
       }
       
       PredBeta <- summary(TmpMod)$coeff$cond[Predictor,1]
@@ -37,10 +38,10 @@ RealEffectTabLong <- function(Models, Predictors, UnitChanges, ConfInt = 95, Pva
           UnitChange = UnitChange,
           DeltaPct = (-(1-exp(PredBeta)^UnitChange))*100)
         
-        TmpDat[,LowerConf := DeltaPct -
-                 ((-(1-exp((stats::qnorm(1-((100-ConfInt)/2/100))*PredSe)))^UnitChange)*100)]
-        TmpDat[,UpperConf := DeltaPct +
-                 ((-(1-exp((stats::qnorm(1-((100-ConfInt)/2/100))*PredSe)))^UnitChange)*100)]
+        TmpDat[,LowerConf := round(DeltaPct -
+                 ((-(1-exp((stats::qnorm(1-((100-ConfInt)/2/100))*PredSe)))^UnitChange)*100), Precision)]
+        TmpDat[,UpperConf := round(DeltaPct +
+                 ((-(1-exp((stats::qnorm(1-((100-ConfInt)/2/100))*PredSe)))^UnitChange)*100), Precision)]
         if(Pvals == T){
           TmpDat[,Pval := Pval]
         }
@@ -53,16 +54,18 @@ RealEffectTabLong <- function(Models, Predictors, UnitChanges, ConfInt = 95, Pva
           UnitChange = UnitChange,
           DeltaPct = (-(1-exp(PredBeta/(ChangeTab[j,ScaleSd]*stats::sd(PredVect)))^UnitChange))*100)
         
-        TmpDat[,LowerConf := DeltaPct -
+        TmpDat[,LowerConf := round(DeltaPct -
                  (-(1-exp((stats::qnorm(1-((100-ConfInt)/2/100))*PredSe)/
-                            (ChangeTab[j,ScaleSd]*stats::sd(PredVect)))^UnitChange))*100]
-        TmpDat[,UpperConf := DeltaPct +
+                            (ChangeTab[j,ScaleSd]*stats::sd(PredVect)))^UnitChange))*100, Precision)]
+        TmpDat[,UpperConf := round(DeltaPct +
                  (-(1-exp((stats::qnorm(1-((100-ConfInt)/2/100))*PredSe)/
-                            (ChangeTab[j,ScaleSd]*stats::sd(PredVect)))^UnitChange))*100]
+                            (ChangeTab[j,ScaleSd]*stats::sd(PredVect)))^UnitChange))*100, Precision)]
         if(Pvals == T){
         TmpDat[,Pval := Pval]
         }
       }
+      TmpDat[,DeltaPct := round(DeltaPct, Precision)]
+      
       FullEffects <- c(FullEffects, list(TmpDat))
     }
   }

@@ -36,6 +36,10 @@
 #' @param Data The unquoted name of the table containing the unscaled predictor vectors, and when using
 #' \code{RealEffectTabLong}, the group membership column.
 #' 
+#' @param Precision The number of digits right of the decimal to retain in values shown in the resultant table. 
+#' Note that this argument only influences the values displayed in the resultant table, and no rounding occurs 
+#' until all calculations are carried out.
+#' 
 #' @return These functions return a data table with six vectors: the name of the model that 
 #' the change in the response variable is associated with, the name of the predictor that the change in the
 #' response variable is associated with, the unscaled change in the predictor, the change in the response
@@ -43,24 +47,24 @@
 #' If \code{Pvals = T}, a seventh column with predictor p-values is also included.
 #' 
 #' @examples 
-#' data("EpfuNb2Wide", "MyevNb2Wide", "EpfuNb2Long",
-#'      "MyevNb2Long", "BatDataWide", "BatDataLong",
+#' data("Epfu_Nb2", "Myev_Nb2", "Epfu_Nb2_Long",
+#'      "Myev_Nb2_Long", "BatDataWide", "BatDataLong",
 #'       package = "EcoCountHelper")
 #' 
 #' #RealEffectTabWide Single Model Example
-#' RealEffectTabWide(EpfuNb2Wide, Predictors = c("scale2(Yday)", "scale2(MoonPct)"),
+#' RealEffectTabWide(Epfu_Nb2, Predictors = c("YdayScale", "MoonScale"),
 #'                   UnitChanges = c(10, 0.3), ScaleSds = c(2,2),
 #'                   PredVects = c("Yday", "MoonPct"), Data = BatDataWide)
 #' 
 #' #RealEffectTabWide Multiple Model Example
-#' RealEffectTabWide(c("EpfuNb2Wide", "MyevNb2Wide"),
-#'                   Predictors = c("scale2(Yday)", "scale2(MoonPct)"),
+#' RealEffectTabWide(c("Epfu_Nb2", "Myev_Nb2"),
+#'                   Predictors = c("YdayScale", "MoonScale"),
 #'                   UnitChanges = c(10, 0.3), ScaleSds = c(2,2),
 #'                   PredVects = c("Yday", "MoonPct"), Data = BatDataWide)
 #'                   
 #' #RealEffectTabLong Single Model Example
-#' RealEffectTabLong(EpfuNb2Long,
-#'                   Predictors = c("scale2(Yday)", "scale2(MoonPct)"),
+#' RealEffectTabLong(Epfu_Nb2_Long,
+#'                   Predictors = c("YdayScale", "MoonScale"),
 #'                   UnitChanges = c(10, 0.3), GroupCol = "Species",
 #'                   GroupPat = "^[[:alpha:]]{4}", ScaleSds = c(2,2),
 #'                   PredVects = c("Yday", "MoonPct"), Data = BatDataLong)

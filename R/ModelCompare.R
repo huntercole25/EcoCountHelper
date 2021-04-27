@@ -22,8 +22,8 @@
 #' to the \code{TopModOutName} argument.
 #'
 #' @examples
-#' data("EpfuNb1Long", "EpfuNb2Long", "MyevNb1Long",
-#'       "MyevNb2Long", package = "EcoCountHelper")
+#' data("Epfu_Nb1_Long", "Epfu_Nb2_Long", "Myev_Nb1_Long",
+#'       "Myev_Nb2_Long", package = "EcoCountHelper")
 #'       
 #' Species <- c("Epfu", "Myev")
 #' ModelCompare(Species, TestCompare)

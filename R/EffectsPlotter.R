@@ -38,32 +38,32 @@
 #' to this function must have the same model formula.
 #'
 #' @examples
-#' data("EpfuNb2Long", "MyevNb2Long", package = "EcoCountHelper")
+#' data("Epfu_Nb2_Long", "Myev_Nb2_Long", package = "EcoCountHelper")
 #' Labels <- letters[1:12]
 #' 
 #' #Effects plot for a single model
 #'
-#' EffectsPlotter(EpfuNb2Long, Labels)
-#' EpfuNb2LongEffectsPlot
+#' EffectsPlotter(Epfu_Nb2_Long, Labels)
+#' Epfu_Nb2_LongEffectsPlot
 #'
 #' #Effects plot for multiple models specified
 #' #in a character vector.
 #'
-#' Mods <- c("EpfuNb2Long", "MyevNb2Long")
+#' Mods <- c("Epfu_Nb2_Long", "Myev_Nb2_Long")
 #' EffectsPlotter(Mods, Labels)
-#' EpfuNb2LongEffectsPlot
-#' MyevNb2LongEffectsPlot
+#' Epfu_Nb2_LongEffectsPlot
+#' Myev_Nb2_LongEffectsPlot
 #'
 #' #Effects plot for multiple models specified
 #' #in a data frame
 #'
 #' ModTable <- data.frame(Species = c("Epfu", "Myev"),
-#'                         Mods = c("EpfuNb2Long", "MyevNb2Long"))
+#'                         Mods = c("Epfu_Nb2_Long", "Myev_Nb2_Long"))
 #'                         
 #' EffectsPlotter(ModTable, Labels, "Mods")
 #' 
-#' EpfuNb2LongEffectsPlot
-#' MyevNb2LongEffectsPlot
+#' Epfu_Nb2_LongEffectsPlot
+#' Myev_Nb2_LongEffectsPlot
 #'
 #' @export
 
@@ -72,10 +72,7 @@ EffectsPlotter <- function(TopMods, ParamLabs = NULL, TopModCol = NULL,
   if("glmmTMB" %in% class(TopMods)){
     TmpMod <- deparse(substitute(TopMods))
   }else{
-    TmpMod <- get(deparse(substitute(TopMods)))
-    if(!is.null(TopModCol)){
-      TmpMod <- as.character(TmpMod[[TopModCol]])
-    }
+    TmpMod <- TopMods
   }
   EffectsPlotterSub <- function(TopMod){
     SpMod <- get(TopMod, envir = .GlobalEnv)

@@ -21,7 +21,7 @@
 #' @section Model Preparation:
 #' Before using this package, models must be generated for each group of interest using 
 #' \code{\link[glmmTMB]{glmmTMB}}. All models for a group should contain the same data, 
-#' but can include different error distribution families (i.r., negative-binomial 1 & 2, 
+#' but can include different error distribution families (i.e., negative-binomial 1 & 2, 
 #' Poisson) and different zero-inflated formulas if appropriate. It is also important 
 #' to note that model names should describe the group each model is associated with as well as 
 #' the error structure. EcoCountHelper uses regular expressions to determine group membership 

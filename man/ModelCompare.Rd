@@ -31,8 +31,8 @@ argument values, and model objects in the global environment containing the supp
 compared via \code{\link[stats]{AIC}}.
 }
 \examples{
-data("EpfuNb1Long", "EpfuNb2Long", "MyevNb1Long",
-      "MyevNb2Long", package = "EcoCountHelper")
+data("Epfu_Nb1_Long", "Epfu_Nb2_Long", "Myev_Nb1_Long",
+      "Myev_Nb2_Long", package = "EcoCountHelper")
       
 Species <- c("Epfu", "Myev")
 ModelCompare(Species, TestCompare)

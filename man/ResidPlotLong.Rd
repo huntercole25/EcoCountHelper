@@ -61,24 +61,24 @@ fit for models produced using \code{\link[glmmTMB]{glmmTMB}} with or without ran
 }
 \examples{
 #ResidPlotWide Example
-data("BatDataWide", "EpfuNb2Wide", "MyevNb2Wide", package = "EcoCountHelper")
+data("BatDataWide", "Epfu_Nb2", "Myev_Nb2", package = "EcoCountHelper")
 
-ResidPlotWide(BatDataWide, c("EpfuNb2Wide", "MyevNb2Wide"), "^[[:alpha:]]{4}")
+ResidPlotWide(BatDataWide, c("Epfu_Nb2", "Myev_Nb2"), "^[[:alpha:]]{4}")
 
-EpfuNb2WideResidTests
-EpfuNb2WideSimResidPlot
-MyevNb2WideResidTests
-MyevNb2WideSimResidPlot
+Epfu_Nb2ResidTests
+Epfu_Nb2SimResidPlot
+Myev_Nb2ResidTests
+Myev_Nb2SimResidPlot
 
 #ResidPlotLong Example
-data("BatDataLong", "EpfuNb2Long", "MyevNb2Long", package = "EcoCountHelper")
+data("BatDataLong", "Epfu_Nb2_Long", "Myev_Nb2_Long", package = "EcoCountHelper")
 
 ResidPlotLong(BatDataLong, "Count", "Species",
- c("EpfuNb2Long", "MyevNb2Long"), "^[[:alpha:]]{4}")
+ c("Epfu_Nb2_Long", "Myev_Nb2_Long"), "^[[:alpha:]]{4}")
 
-EpfuNb2LongResidTests
-EpfuNb2LongSimResidPlot
-MyevNb2LongResidTests
-MyevNb2LongSimResidPlot
+Epfu_Nb2_LongResidTests
+Epfu_Nb2_LongSimResidPlot
+Myev_Nb2_LongResidTests
+Myev_Nb2_LongSimResidPlot
 
 }
