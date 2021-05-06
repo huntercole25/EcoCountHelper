@@ -21,29 +21,9 @@ ResidPlotLong <- function (Data, CountCol, GroupCol, ModNames, GroupPat = "^[[:a
     SimModDharma <- DHARMa::createDHARMa(simulatedResponse = SimMod, 
                                          observedResponse = TmpFull[[CountCol]], fittedPredictedResponse = predict(TmpMod), 
                                          integerResponse = TRUE)
-    GroupResidTests <- DHARMa::testResiduals(SimModDharma, plot = F)
-    
-    png(TmpFile1)
-    par(mfrow = c(1,2))
-    DHARMa::plotQQunif(SimModDharma, testUniformity = F, testOutliers = F, testDispersion = F)
-    title(sub = GroupMod, font.sub = 2)
-    DHARMa::testDispersion(SimModDharma)
-    dev.off()
-    
-    png(TmpFile2)
-    par(mfrow = c(1,1))
-    DHARMa::testOutliers(SimModDharma)
-    dev.off()
-    
-    Plot1 <- png::readPNG(TmpFile1)
-    Plot2 <- png::readPNG(TmpFile2)
-    
-    Plot1Gr <- grid::rasterGrob(Plot1)
-    Plot2Gr <- grid::rasterGrob(Plot2)
-    
-    gridExtra::grid.arrange(Plot1Gr, Plot2Gr, nrow = 1)
-    
+    GroupResidTests <- DHARMa::testResiduals(SimModDharma, plot = T)
     ResidPlot <- grDevices::recordPlot()
+    
     assign(paste0(GroupMod, "SimResidPlot"), ResidPlot, 
            pos = .GlobalEnv)
     if (TestVals == T) {
