@@ -3,3 +3,5 @@
 ^doc$
 ^Meta$
 ^data-raw$
+^\.gitignore
+^\.Rhistory
