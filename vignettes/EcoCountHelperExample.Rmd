@@ -692,7 +692,18 @@ setnames(RealEfWide, old = "UnitChange",
          skip_absent = T)
 ```
   
-The last step we need to take before creating a formatted table is to record the rows that fall under each predictor classification (anthropogenic or natural) and delete the "PredNature" vector. From the table above, we know that anthropogenic predictors occupy rows one through four, and natural predictors occupy rows five through nine. With that information recorded, we can remove the "PredNature" vector from the "RealEfWide" table.  
+We now have a table that looks like the one below.  
+```{r RealEfWideEx}
+RealEfWide
+```
+  
+If you would like to modify the table above in a spreadsheet program or paste the table into a document for further formatting, writing the table to a file is the next step. You can use base R's `write.csv()` function for writing tables to external files as is shown below.  
+
+```{r WriteWide, eval=FALSE}
+write.csv(RealEfWide, SaveDir, row.names = F)
+```
+  
+If you plan to format the table in R and export the formatted table as an image, there is one final step we can execute. Rather than having "Anthropogenic" and "Natural" shown in each row of our formatted table, we can manually specify rows to be grouped as well as the value that should be shown for each group. Before creating a formatted table, we can record the rows that fall under each predictor classification (anthropogenic or natural) and delete the "PredNature" vector. From the table above, we know that anthropogenic predictors occupy rows one through four, and natural predictors occupy rows five through nine. With that information recorded, we can remove the "PredNature" vector from the "RealEfWide" table.  
 
 ```{r PredNatDelete}
 RealEfWide[,PredNature := NULL]
