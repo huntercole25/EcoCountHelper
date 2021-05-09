@@ -437,7 +437,7 @@ The points plotted in this graph show individual mean and variance data for each
 
 `EcoCountHelper` also has a function that produces tabulated AIC values for each response group, as well as a table showing the best fitting model (as defined by AIC) for each response group. Users specify the names of the response groups under investigation (which should also be in the model names as mentioned above) using the "Groups" argument, and the desired name of the table listing the top model for each response group using the "TopModOut" argument.
 
-```{r ModelCompare, cache=TRUE}
+```{r ModelCompare}
 ModelCompare(Groups = SpeciesList, TopModOutName = BestFitModels)
 ```
 
