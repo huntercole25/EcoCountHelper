@@ -23,7 +23,7 @@ install_github(repo = "huntercole25/EcoCountHelper", build_vignettes = T)
 
 ### Citing
 
-After installing EcoCountHelper, to see citation information for the package use the line of code below:
+After installing `EcoCountHelper`, to see citation information for the package use the line of code below:
 
 ```{r Cite, eval=FALSE}
 citation("EcoCountHelper")
