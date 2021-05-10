@@ -16,18 +16,11 @@ EffectsPlotter(
 \arguments{
 \item{TopMods}{This argument can accept multiple input types, and is used to specify which models effects plots
 should be generated for. If an effects plot is desired for a single model, users can supply the unquoted model
-object name. If effects plots for multiple models are desired, users can supply either the unquoted name
-of a character vector containing model object names, or the name of a data table or data frame containing a
-character vector of model object names. If using the latter option, be sure to provide a value to the
-\code{TopModCol} argument.}
+object name. If effects plots for multiple models are desired, users can specify a chahracter vector of model names.}
 
 \item{ParamLabs}{A character vector of labels for each model estimate. Labels must be supplied for estimates in the
 same order as the vector returned by \code{row.names(summary(x)$coeff$cond)}, where \code{x} is a model
 object name.}
-
-\item{TopModCol}{A character string specifying the name of the column containing model object names in a
-data frame or data table. This argument should only be used if \code{TopMods} is supplied with the name of
-a data frame or data table such as the top model table returned by \code{\link{ModelCompare}}.}
 
 \item{ConfInts}{A numeric vector specifying up to three condifence intervals as percent values from largest
 to smallest (e.g., for 80\%, 90\%, and 95\% confidence intervals, supply \code{ConfInts = c(95, 90, 80)}).}

@@ -17,11 +17,13 @@ the top model for each group supplied to the \code{Groups} argument.}
 }
 \value{
 This function produces n+1 data tables, with n being the number of groups supplied to the
-\code{Groups} argument. A data table detailing each model in a group and its AIC value is produed for each
+\code{Groups} argument with corresponding glmmTMB class objects in the global environment. 
+A data table detailing each model in a group and its AIC value is produced for each
 group. Each of these data tables is named with the group name followed by "AIC" (e.g., the data table
 associated with a group named "Epfu" would be named "EpfuAIC"). An additional data table is produced
 detailing the top model for each group. The data table of top models is named with the value supplied
-to the \code{TopModOutName} argument.
+to the \code{TopModOutName} argument. If a group name is provided to the "Groups" argument 
+that does not have a glmmTMB class object associated with it, a warning mesasge is generated.
 }
 \description{
 This function allows users to input a list/vector of groups (taxonomic or otherwise), each of which

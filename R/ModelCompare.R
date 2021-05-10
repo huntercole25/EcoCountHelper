@@ -15,11 +15,13 @@
 #' the top model for each group supplied to the \code{Groups} argument.
 #'
 #' @return This function produces n+1 data tables, with n being the number of groups supplied to the
-#' \code{Groups} argument. A data table detailing each model in a group and its AIC value is produed for each
+#' \code{Groups} argument with corresponding glmmTMB class objects in the global environment. 
+#' A data table detailing each model in a group and its AIC value is produced for each
 #' group. Each of these data tables is named with the group name followed by "AIC" (e.g., the data table
 #' associated with a group named "Epfu" would be named "EpfuAIC"). An additional data table is produced
 #' detailing the top model for each group. The data table of top models is named with the value supplied
-#' to the \code{TopModOutName} argument.
+#' to the \code{TopModOutName} argument. If a group name is provided to the "Groups" argument 
+#' that does not have a glmmTMB class object associated with it, a warning mesasge is generated.
 #'
 #' @examples
 #' data("Epfu_Nb1_Long", "Epfu_Nb2_Long", "Myev_Nb1_Long",
@@ -39,6 +41,12 @@ ModelCompare <- function(Groups, TopModOutName){
 
   ModCompSub <- function(Group){
     ModVect <- Filter(function(x) inherits(get(x), "glmmTMB"), ls(pattern = Group, envir = .GlobalEnv))
+    
+    if(length(ModVect)==0){
+      warning(paste("There were no glmmTMB class objects for the", Group,
+                  "group. If any models did converge for the", Group,
+                  "group, please ensure you correctly specified the vector provided to the 'Groups' argument."))
+    }else{
     AicList <- list()
     for(i in 1:length(ModVect)){
       TmpMod <- get(ModVect[i], envir = .GlobalEnv)
@@ -52,11 +60,12 @@ ModelCompare <- function(Groups, TopModOutName){
     PreTopMods <- get("TopMods")
     GroupTopMod <- data.table::data.table(Subj = Group, TopModel = na.omit(FinalAicTab)[Aic == min(Aic), Model])
     TopMods <<- c(list(GroupTopMod), PreTopMods)
-
-  }
+    }
+    }
 
   lapply(Groups, ModCompSub)
 
   FinalToppers <- data.table::rbindlist(TopMods)
   assign(deparse(substitute(TopModOutName)), FinalToppers, envir = .GlobalEnv)
+
 }
