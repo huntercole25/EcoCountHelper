@@ -675,7 +675,7 @@ RealEfWide
 Our table is coming along well, but the species are in reverse alphabetical order. If we want the species in alphabetical order, we will have to specify the column order manually using `setcolorder()`.
 
 ```{r AlphaSp}
-setcolorder(x = RealEfWide, neworder = c("Predictor", "UnitChange",
+setcolorder(x = RealEfWide, neworder = c("PredNature", "Predictor", "UnitChange",
                                          "Epfu", "Laci", "Lano", 
                                          "Myev", "Mylu", "Myvo",
                                          "Myyu"))
