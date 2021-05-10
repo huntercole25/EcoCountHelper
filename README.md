@@ -1,4 +1,12 @@
 # EcoCountHelper  
+  
+<a href="https://github.com/huntercole25/EcoCountHelper/blob/master/LICENSE"><img alt="GitHub license" src="https://img.shields.io/github/license/huntercole25/EcoCountHelper"></a>
+<img alt="GitHub release (latest by date including pre-releases)" src="https://img.shields.io/github/v/release/huntercole25/EcoCountHelper?include_prereleases">
+[![minimal R version](https://img.shields.io/badge/R%3E%3D-3.6.3-6666ff.svg)](https://cran.r-project.org/)
+<img alt="GitHub branch checks state" src="https://img.shields.io/github/checks-status/huntercole25/EcoCountHelper/master">
+<img alt="GitHub all releases" src="https://img.shields.io/github/downloads/huntercole25/EcoCountHelper/total">
+
+
 
 ## Package Purpose
 
@@ -16,7 +24,7 @@ While obvious, it is important to have an appropriate version of R installed on 
 
 The simplest way to install `EcoCountHelper` is to use the `install_github` function from the `devtools` package. Before proceeding with this the installation of EcoCountHelper, you must first ensure that you have the software "Rtools" installed [(available through this link)](https://cran.r-project.org/bin/windows/Rtools/), then ensure `devtools` is installed. To install and load `devtools` then install `EcoCountHelper`, use the code below:
 
-```{r Install, eval=FALSE}
+```
 require(devtools)
 install_github(repo = "huntercole25/EcoCountHelper", build_vignettes = T)
 ```
@@ -25,12 +33,12 @@ install_github(repo = "huntercole25/EcoCountHelper", build_vignettes = T)
 
 After installing `EcoCountHelper`, to see citation information for the package use the line of code below:
 
-```{r Cite, eval=FALSE}
+```
 citation("EcoCountHelper")
 ```
 
 ## Learning More  
 For an in-depth example of the workflow and functions associated with this package, run the code below in your R session after installing `EcoCountHelper`:  
-```{r}
+```
 vignette("EcoCountHelperExample")
 ```
