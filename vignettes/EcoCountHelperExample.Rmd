@@ -1,6 +1,6 @@
 ---
 title: "Analyzing Wildlife Count Data using EcoCountHelper"
-date: April 26, 2021
+date: May 10, 2021
 output:
   rmarkdown::html_vignette:
     toc: true
