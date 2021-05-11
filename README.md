@@ -25,6 +25,7 @@ While obvious, it is important to have an appropriate version of R installed on 
 The simplest way to install `EcoCountHelper` is to use the `install_github` function from the `devtools` package. Before proceeding with this the installation of EcoCountHelper, you must first ensure that you have the software "Rtools" installed [(available through this link)](https://cran.r-project.org/bin/windows/Rtools/), then ensure `devtools` is installed. To install and load `devtools` then install `EcoCountHelper`, use the code below:
 
 ```
+install.packages("devtools")
 require(devtools)
 install_github(repo = "huntercole25/EcoCountHelper", build_vignettes = T)
 ```
