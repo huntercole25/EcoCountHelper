@@ -48,13 +48,13 @@ DumbGrid <- function(..., Ncols, FirstColWidth = 1, SharedLegend = F){
   nplot <- length(plots)
 
   for(i in setdiff(seq(1, nplot, 1), seq(1, nplot, Ncols))){
-    plots[[i]] <- plots[[i]] + ggplot2::theme(axis.title.y = element_blank(), axis.text.y = element_blank())
+    plots[[i]] <- plots[[i]] + ggplot2::theme(axis.title.y = ggplot2::element_blank(), axis.text.y = ggplot2::element_blank())
 }
   plnums <- seq(1, nplot, 1)
   nox <- plnums[plnums < max(seq(1, nplot, Ncols))]
 
   for(i in nox){
-    plots[[i]] <- plots[[i]] + ggplot2::theme(axis.title.x = element_blank())
+    plots[[i]] <- plots[[i]] + ggplot2::theme(axis.title.x = ggplot2::element_blank())
   }
 
   if(SharedLegend == T){

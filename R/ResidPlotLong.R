@@ -1,7 +1,7 @@
 #' @rdname ResidPlotLong
 #' 
 #' @export
-
+#' 
 ResidPlotLong <- function (Data, CountCol, GroupCol, ModNames, GroupPat = "^[[:alnum:]]+", 
                            Looped = T, Nsims = 1000, TestVals = T) 
 {
@@ -19,21 +19,20 @@ ResidPlotLong <- function (Data, CountCol, GroupCol, ModNames, GroupPat = "^[[:a
     ModTab <- stats::simulate(TmpMod, nsim = Nsims)
     SimMod <- do.call(cbind, ModTab)
     SimModDharma <- DHARMa::createDHARMa(simulatedResponse = SimMod, 
-                                         observedResponse = TmpFull[[CountCol]], fittedPredictedResponse = predict(TmpMod), 
+                                         observedResponse = TmpFull[[CountCol]], fittedPredictedResponse = stats::predict(TmpMod), 
                                          integerResponse = TRUE)
     GroupResidTests <- DHARMa::testResiduals(SimModDharma, plot = F)
-    
-    png(TmpFile1)
-    par(mfrow = c(1,2))
+    grDevices::png(TmpFile1)
+    graphics::par(mfrow = c(1,2))
     DHARMa::plotQQunif(SimModDharma, testUniformity = F, testOutliers = F, testDispersion = F)
-    title(sub = GroupMod, font.sub = 2)
+    graphics::title(sub = GroupMod, font.sub = 2)
     DHARMa::testDispersion(SimModDharma)
-    dev.off()
+    grDevices::dev.off()
     
-    png(TmpFile2)
-    par(mfrow = c(1,1))
+    grDevices::png(TmpFile2)
+    graphics::par(mfrow = c(1,1))
     DHARMa::testOutliers(SimModDharma)
-    dev.off()
+    grDevices::dev.off()
     
     Plot1 <- png::readPNG(TmpFile1)
     Plot2 <- png::readPNG(TmpFile2)
@@ -44,10 +43,8 @@ ResidPlotLong <- function (Data, CountCol, GroupCol, ModNames, GroupPat = "^[[:a
     gridExtra::grid.arrange(Plot1Gr, Plot2Gr, nrow = 1)
     
     ResidPlot <- grDevices::recordPlot()
-    
     assign(paste0(GroupMod, "SimResidPlot"), ResidPlot, 
            pos = .GlobalEnv)
-    
     if (TestVals == T) {
       assign(paste0(GroupMod, "ResidTests"), GroupResidTests, 
              pos = .GlobalEnv)

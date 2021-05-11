@@ -4,6 +4,7 @@
 
 DistFitLong <- function(Splitters, Data, CountCol, GroupCol,
                         GroupList, ThemeBlack = T){
+  .data <- NULL
   
   Plotter <- function(GroupName){
     FullData <- get(deparse(substitute(Data)))
@@ -14,8 +15,8 @@ DistFitLong <- function(Splitters, Data, CountCol, GroupCol,
       Params[[i]] <- FullData[[i]][FullData[[GroupCol]] == GroupName]
     }
     
-    VarData <- aggregate(Count, Params, FUN = var)[[length(Splitters)+1]]
-    MeanData <- aggregate(Count, Params, FUN = mean)[[length(Splitters)+1]]
+    VarData <- stats::aggregate(Count, Params, FUN = stats::var)[[length(Splitters)+1]]
+    MeanData <- stats::aggregate(Count, Params, FUN = mean)[[length(Splitters)+1]]
     
     MeanVarData <- as.data.frame(cbind(VarData, MeanData))
     

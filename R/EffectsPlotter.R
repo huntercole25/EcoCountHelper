@@ -23,7 +23,7 @@
 #' (T) or not (F).
 #'
 #' @return This function generates effects plots using \code{\link[ggplot2]{geom_point}} for point estimates and
-#' \code{\link[ggplot2]{geom_errorbar}} for confidence intervals. Resultant plots are named with the model name
+#' \code{\link[ggplot2]{geom_crossbar}} for confidence intervals. Resultant plots are named with the model name
 #' followed by "EffectsPlot" (e.g., for a model named "EpfuNb2", the effects plot would be named "EpfuNb2EffectsPlot").
 #'
 #' @section Details:
@@ -53,15 +53,18 @@
 #' ModTable <- data.frame(Species = c("Epfu", "Myev"),
 #'                         Mods = c("Epfu_Nb2_Long", "Myev_Nb2_Long"))
 #'                         
-#' EffectsPlotter(ModTable, Labels, "Mods")
+#' EffectsPlotter(ModTable$Mods, Labels)
 #' 
 #' Epfu_Nb2_LongEffectsPlot
 #' Myev_Nb2_LongEffectsPlot
 #'
 #' @export
 
-EffectsPlotter <- function(TopMods, ParamLabs = NULL, TopModCol = NULL,
-                           ConfInts = c(90, 80), Scaled = T, ThemeBlack = T){
+EffectsPlotter <- function(TopMods, ParamLabs = NULL,
+                           ConfInts = c(90, 80), Scaled = T,
+                           ThemeBlack = T){
+  `:=` <- Param <- Order <- Estimate <- `Std. Error` <- NULL
+  
   if("glmmTMB" %in% class(TopMods)){
     TmpMod <- deparse(substitute(TopMods))
   }else{

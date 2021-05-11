@@ -4,6 +4,8 @@
 RealEffectTabWide <- function(Models, Predictors, UnitChanges, ConfInt = 95, Pvals = T,
                               ScaleSds = rep(NA, length(Predictors)), PredVects = ScaleSds,
                               Data = NULL, Precision = 2){
+  ScaleSd <- `:=` <- PredCol <- UnitCh <- rn <- `Pr(>|z|)` <- LowerConf <- DeltaPct <- UpperConf <- NULL
+  
   if("glmmTMB" %in% class(Models)){
     Models <- deparse(substitute(Models))
   }

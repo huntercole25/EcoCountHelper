@@ -37,6 +37,8 @@
 #' @export
 
 ModelCompare <- function(Groups, TopModOutName){
+  Aic <- Model <- NULL
+  
   TopMods <- list()
 
   ModCompSub <- function(Group){
@@ -50,7 +52,7 @@ ModelCompare <- function(Groups, TopModOutName){
     AicList <- list()
     for(i in 1:length(ModVect)){
       TmpMod <- get(ModVect[i], envir = .GlobalEnv)
-      TmpAic <- data.table::data.table(Model = ModVect[i], Aic = AIC(TmpMod), Subj = Group)
+      TmpAic <- data.table::data.table(Model = ModVect[i], Aic = stats::AIC(TmpMod), Subj = Group)
       AicList <- c(list(TmpAic), AicList)
     }
     FinalAicTab <- data.table::rbindlist(AicList)
@@ -58,7 +60,7 @@ ModelCompare <- function(Groups, TopModOutName){
     assign(paste0(Group,"AIC"), FinalAicTab, envir = .GlobalEnv)
 
     PreTopMods <- get("TopMods")
-    GroupTopMod <- data.table::data.table(Subj = Group, TopModel = na.omit(FinalAicTab)[Aic == min(Aic), Model])
+    GroupTopMod <- data.table::data.table(Subj = Group, TopModel = stats::na.omit(FinalAicTab)[Aic == min(Aic), Model])
     TopMods <<- c(list(GroupTopMod), PreTopMods)
     }
     }

@@ -18,6 +18,7 @@ To make adjustments to your plot's theme while using this function, using ggplot
 
 \examples{
 #Creating a plot with theme_nocturnal
+library(ggplot2)
 
 DarkPlot <- ggplot(cars, aes(speed, dist)) +
   geom_point(color = "grey80") + #Note the specification of a light color for the points
