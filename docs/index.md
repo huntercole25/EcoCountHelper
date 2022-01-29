@@ -43,3 +43,4 @@ For an in-depth example of the workflow and functions associated with this packa
 ```
 vignette("EcoCountHelperExample")
 ```
+ You can also click [(this link)](https://huntercole25.github.io/EcoCountHelper/EcoCountHelperExample.html) to view the intro vignette on the web.
