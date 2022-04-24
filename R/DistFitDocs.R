@@ -20,6 +20,9 @@
 #'
 #' @param ThemeBlack A logical value indicating whether the plots generated should include \code{\link{theme_nocturnal}}
 #' (T) or not (F).
+#' 
+#' @param Prefix A character string specifying a prefix to be assigned to the 
+#' ggplot object generated as well as the plot title
 #'
 #' @return These functions produces a mean/variance plot with NB1, NB2, and Poisson family function lines for
 #' each group in the vector supplied to the \code{GroupList} argument. Each resultant plot is named with
