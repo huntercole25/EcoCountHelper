@@ -1,7 +1,7 @@
 Package: EcoCountHelper
 Title: An assistant for comparing and interpretting models with count data
-Version: 0.0.0.4
-Date: 2021-05-10
+Version: 0.0.0.5
+Date: 2022-04-24
 Depends:
 	glmmTMB (>= 1.0.1),
   data.table (>= 1.12.8),
@@ -39,4 +39,4 @@ Description: This package is tailored to comparing and interpretting models
 License: GPL-3 + file LICENSE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
