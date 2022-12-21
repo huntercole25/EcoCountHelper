@@ -1,10 +1,8 @@
 # EcoCountHelper  
   
 <a href="https://github.com/huntercole25/EcoCountHelper/blob/master/LICENSE"><img alt="GitHub license" src="https://img.shields.io/github/license/huntercole25/EcoCountHelper"></a>
-<img alt="GitHub release (latest by date including pre-releases)" src="https://img.shields.io/github/v/release/huntercole25/EcoCountHelper?include_prereleases">
+<img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/huntercole25/EcoCountHelper">
 [![minimal R version](https://img.shields.io/badge/R%3E%3D-4.2.2-6666ff.svg)](https://cran.r-project.org/)
-<img alt="GitHub branch checks state" src="https://img.shields.io/github/checks-status/huntercole25/EcoCountHelper/master">
-<img alt="GitHub all releases" src="https://img.shields.io/github/downloads/huntercole25/EcoCountHelper/total">
 
 
 
