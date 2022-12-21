@@ -19,7 +19,13 @@ that simplifies the coding process necessary to conduct such analyses.
 ## Installing and Citing EcoCountHelper
 
 ### Installing
-While obvious, it is important to have an appropriate version of R installed on your machine. The earliest version of R that this package has been tested with is 3.6.3, and thus we recommend updating your R install if you are using an earlier version of R.
+`EcoCountHelper` requires R version >= 4.2.2. You must update R if you are using an earlier version. The easiest way to do this is to open the R graphical user interface (RStudio and other IDEs can sometimes cause issues), and use the `updateR()` function from the `installr` package.
+
+```
+install.packages("installr")
+require(installr)
+updateR()
+```
 
 The simplest way to install `EcoCountHelper` is to use the `install_github` function from the `devtools` package. Before proceeding with this the installation of EcoCountHelper, you must first ensure that you have the software "Rtools" installed [(available through this link)](https://cran.r-project.org/bin/windows/Rtools/), then ensure `devtools` is installed. To install and load `devtools` then install `EcoCountHelper`, use the code below:
 
