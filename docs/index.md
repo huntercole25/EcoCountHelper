@@ -2,7 +2,7 @@
   
 <a href="https://github.com/huntercole25/EcoCountHelper/blob/master/LICENSE"><img alt="GitHub license" src="https://img.shields.io/github/license/huntercole25/EcoCountHelper"></a>
 <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/huntercole25/EcoCountHelper">
-[![minimal R version](https://img.shields.io/badge/R%3E%3D-4.2.2-6666ff.svg)](https://cran.r-project.org/)
+[![minimal R version](https://img.shields.io/badge/R%20%3E%3D-4.2.2-blueviolet)
 <a href="https://zenodo.org/badge/latestdoi/268901372"><img src="https://zenodo.org/badge/268901372.svg" alt="DOI"></a>
 
 
