@@ -5,7 +5,7 @@ Date: 2022-12-21
 Depends:
 	glmmTMB (>= 1.1.5),
   data.table (>= 1.12.8),
-	R (>= 4.2.2)
+	R (>= 4.1.2)
 Imports:
 	ggplot2 (>= 3.4.0),
   cowplot (>= 1.1.1),
